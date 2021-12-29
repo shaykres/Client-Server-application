@@ -22,6 +22,7 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     @Override
     public void process(Message message) {
         Message tosend=message.process(connectionId);
+        connections.send(connectionId,tosend);
     }
 
     @Override

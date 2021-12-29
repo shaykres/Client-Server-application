@@ -15,7 +15,7 @@ public class RegisterMessage extends Message {
     }
 
     @Override
-    public Message process() {
+    public Message process(int conID) {
         return null;
     }
 }
