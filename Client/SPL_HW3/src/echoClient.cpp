@@ -2,7 +2,7 @@
 #include "../include/connectionHandler.h"
 #include "../include/Task.h"
 
-short bytesToShort(char *bytes);
+void shortToBytes(short num, char* bytesArr);
 
 /**
 * This code assumes that the server replies the exact text the client sent it (as opposed to the practical session example)
@@ -14,7 +14,7 @@ int main (int argc, char *argv[]) {
     }
     std::string host = argv[1];
     short port = atoi(argv[2]);
-    std::map<std::string ,int> CommandMap;
+    std::map<std::string ,short> CommandMap;
     CommandMap["REGISTER"]=1;
     CommandMap["LOGIN"]=2;
     CommandMap["LOGOUT"]=3;
@@ -23,10 +23,10 @@ int main (int argc, char *argv[]) {
     CommandMap["PM"]=6;
     CommandMap["LOGSTAT"]=7;
     CommandMap["STAT"]=8;
-    CommandMap["NOTIFICATION"]=9;
-    CommandMap["ACK"]=10;
-    CommandMap["ERROR"]=11;
-    CommandMap["BLOCK"]=12;
+//    CommandMap["NOTIFICATION"]=9;
+//    CommandMap["ACK"]=10;
+//    CommandMap["ERROR"]=11;
+//    CommandMap["BLOCK"]=12;
 
     ConnectionHandler connectionHandler(host, port);
     if (!connectionHandler.connect()) {
@@ -48,10 +48,15 @@ int main (int argc, char *argv[]) {
         std::string keyword=line.substr(0,endofkeywork-1);
         int opcode=CommandMap[keyword];
         line=line.substr(endofkeywork+1);
-        char* bytes;
-        bytes[0]=opcode;
-        short result= bytesToShort(bytes);
-        line=result+"\n"+line;
+        char* bytes= new char[2];
+        shortToBytes(opcode,bytes);
+        std::string strOptCode = "";
+        strOptCode.append(1,bytes[0]);
+        strOptCode.append(1,bytes[1]);
+        line=strOptCode+line;
+//        bytes[0]=opcode;
+//        short result= bytesToShort(bytes);
+//        line=result+"\n"+line;
         int len=line.length();
         if (!connectionHandler.sendLine(line)) {
             std::cout << "Disconnected. Exiting...\n" << std::endl;
@@ -86,9 +91,7 @@ int main (int argc, char *argv[]) {
     return 0;
 }
 
-short bytesToShort(char* bytesArr)
-{
-    short result = (short)((bytesArr[0] & 0xff) << 8);
-    result += (short)(bytesArr[1] & 0xff);
-    return result;
+void shortToBytes(short num, char* bytesArr){
+    bytesArr[0] = ((num >> 8) & 0xFF);
+    bytesArr[1] = (num & 0xFF);
 }

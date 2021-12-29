@@ -7,7 +7,6 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::string;
- 
 ConnectionHandler::ConnectionHandler(string host, short port): host_(host), port_(port), io_service_(), socket_(io_service_){}
     
 ConnectionHandler::~ConnectionHandler() {
@@ -72,10 +71,26 @@ bool ConnectionHandler::sendLine(std::string& line) {
 }
  
 bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
+    char* byte;
     char ch;
     // Stop when we encounter the null character. 
     // Notice that the null character is not appended to the frame string.
     try {
+        getBytes(byte, 2);
+        short opcode=bytesToShort(byte);
+        if(opcode==10||opcode==11){
+            getBytes(byte, 2);
+            short subject=bytesToShort(byte);
+            if(opcode==10){
+               frame+="ACK "+std::to_string(subject);
+            }
+            if(opcode==11)
+                frame+="ERROR "+std::to_string(subject);
+        }
+        if(opcode==9)
+            frame+="NOTIFICATION ";
+        if(opcode==12)
+            frame+="BLOCK ";
 		do{
 			getBytes(&ch, 1);
             frame.append(1, ch);
