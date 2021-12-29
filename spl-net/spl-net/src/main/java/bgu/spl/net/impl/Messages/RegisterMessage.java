@@ -13,4 +13,9 @@ public class RegisterMessage extends Message {
     public byte[] encode() {
         return new byte[0];
     }
+
+    @Override
+    public Message process() {
+        return null;
+    }
 }

@@ -11,4 +11,9 @@ public class StatMessage extends Message {
     public byte[] encode() {
         return new byte[0];
     }
+
+    @Override
+    public Message process(int conID) {
+        return null;
+    }
 }

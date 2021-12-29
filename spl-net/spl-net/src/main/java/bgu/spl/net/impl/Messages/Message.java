@@ -8,6 +8,6 @@ public abstract class Message {
         this.argList=argList;
     }
     public abstract byte[]  encode();
-   // public abstract process();
+   public abstract Message process(int conID);
 
 }
