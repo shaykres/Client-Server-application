@@ -10,7 +10,7 @@ public class LogoutMessage extends Message {
 
     @Override
     public byte[] encode() {
-        return new byte[0];
+        return shortToBytes(opCode);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.Messages;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class LoginMessage extends Message {
@@ -16,14 +17,16 @@ public class LoginMessage extends Message {
 
     @Override
     public byte[] encode() {
-        return new byte[0];
+        return shortToBytes(opCode);
     }
 
     @Override
     public Message process(int conID) {
         boolean success=networkSystemData.LogInClient(userName,password);
+        List l=new LinkedList();
+        l.add(this);
         if(success)
-            return new AckMessage();
-        return new ErrorMessage();
+            return new AckMessage(l);
+        return new ErrorMessage(l);
     }
 }

@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.Messages;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class FollowMessage extends Message {
@@ -18,7 +19,15 @@ public class FollowMessage extends Message {
 
     @Override
     public byte[] encode() {
-        return new byte[0];
+        byte[] opcode=shortToBytes(opCode);
+        byte[] body=userName.getBytes(StandardCharsets.UTF_8);
+        byte[] message=new byte[2+body.length+1];
+        message[0]=opcode[0];
+        message[1]=opcode[1];
+        for(int i=0;i<body.length;i++)
+            message[i+2]=body[i];
+        message[message.length-1]=0;
+        return message;
     }
 
     @Override
