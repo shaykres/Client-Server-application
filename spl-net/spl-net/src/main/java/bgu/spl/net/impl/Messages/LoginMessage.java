@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.Messages;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class LoginMessage extends Message {

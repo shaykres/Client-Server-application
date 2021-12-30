@@ -17,8 +17,10 @@ public class LogoutMessage extends Message {
     @Override
     public Message process(int conID) {
         boolean success=networkSystemData.LogOutClient(conID);
+        List l=new LinkedList();
+        l.add(this);
         if(success)
-            return new AckMessage();
-        return new ErrorMessage();
+            return new AckMessage(l);
+        return new ErrorMessage(l);
     }
 }

@@ -13,7 +13,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
     private final ByteBuffer lengthBuf = ByteBuffer.allocate(2);
     private byte[] bytes = new byte[1 << 10]; //start with 1k
     private int len = 0;
-    private List<String> arglist;
+    private List<Object> arglist;
     private int opCode;
 
     public MessageEncoderDecoderImpl() {

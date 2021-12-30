@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.Messages;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class PostMessage extends Message {
@@ -23,17 +24,16 @@ public class PostMessage extends Message {
 
     @Override
     public Message process(int conID) {
-        return null;
-    public Message process(int conID) {
        boolean success=true;
        if(userNameSentTo!=""){
          success=networkSystemData.PostMessage(conID,this,userNameSentTo);
        }
        else
            success=networkSystemData.PostMessage(conID,this);
-
+       List l=new LinkedList();
+       l.add(this);
         if(success)
-            return new AckMessage(new LinkedList<>());
-        return new ErrorMessage();
+            return new AckMessage(l);
+        return new ErrorMessage(l);
     }
 }

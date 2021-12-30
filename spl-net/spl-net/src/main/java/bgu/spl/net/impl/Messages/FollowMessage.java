@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.Messages;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class FollowMessage extends Message {
             follow=true;
         else
             follow=false;
-        userName=arglist.get(1);
+        userName=(String)arglist.get(1);
     }
 
     @Override
@@ -33,8 +34,10 @@ public class FollowMessage extends Message {
     @Override
     public Message process(int conID) {
         boolean success=networkSystemData.FollowClient(conID,follow,userName);
+        List l=new LinkedList();
+        l.add(this);
         if(success)
-            return new AckMessage();
-        return new ErrorMessage();
+            return new AckMessage(l);
+        return new ErrorMessage(l);
     }
 }

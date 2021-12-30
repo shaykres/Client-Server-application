@@ -3,7 +3,7 @@ package bgu.spl.net.impl.Messages;
 import java.util.List;
 
 public class NotificationMessage extends Message {
-    public NotificationMessage(List<String> argList) {
+    public NotificationMessage(List<Object> argList) {
         super(argList);
     }
 

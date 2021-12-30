@@ -3,6 +3,7 @@ package bgu.spl.net.impl.Messages;
 import bgu.spl.net.impl.User;
 
 import javax.print.DocFlavor;
+import java.util.LinkedList;
 import java.util.List;
 
 public class RegisterMessage extends Message {

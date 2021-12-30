@@ -8,6 +8,11 @@ public class StatMessage extends Message {
     }
 
     @Override
+    public byte[] encode() {
+        return new byte[0];
+    }
+
+    @Override
     public Message process(int conID) {
         return null;
     }
