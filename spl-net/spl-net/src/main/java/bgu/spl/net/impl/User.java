@@ -1,9 +1,12 @@
 package bgu.spl.net.impl;
 
+import bgu.spl.net.impl.Messages.Message;
+
 import java.net.PortUnreachableException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class User {
     private String name;
@@ -12,6 +15,7 @@ public class User {
     private List<String> following;
     private List<String> followers;
     private boolean LogIn;
+    private Queue<Message> WaitingMessages;
 
     public User(String name,String password,String birthday){
         this.name=name;
@@ -20,6 +24,7 @@ public class User {
         following=new LinkedList<>();
         followers=new LinkedList<>();
         LogIn=false;
+        WaitingMessages=new LinkedList<>();
     }
 
     public void UserLogIn(){
@@ -48,6 +53,16 @@ public class User {
 
     public void Unfollow(String userName){
         following.remove(userName);
+    }
+
+    public String getUserName(){return name;}
+
+    public List<String> getFollowers(){
+        return followers;
+    }
+
+    public void AddWaitMessage(Message message){
+        WaitingMessages.add(message);
     }
 
 }

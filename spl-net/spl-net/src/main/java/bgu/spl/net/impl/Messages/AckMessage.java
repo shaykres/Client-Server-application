@@ -1,8 +1,15 @@
 package bgu.spl.net.impl.Messages;
 
+import java.util.List;
+
 public class AckMessage extends Message {
+
+    public AckMessage(List<String> argList) {
+        super(argList);
+    }
+
     @Override
-    public byte[] encode() {
-        return new byte[0];
+    public Message process(int conID) {
+        return null;
     }
 }

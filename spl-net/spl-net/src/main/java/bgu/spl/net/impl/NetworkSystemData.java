@@ -15,12 +15,14 @@ public class NetworkSystemData {
     private Map<String,User> SystemUsers;//All users registered since the beginning of the program
     private Map<Integer,User> ConUsers;//All users connected to server
     private List<Message> Messages;
+    private ConnectionsImpl connections;
 
 
     private NetworkSystemData() {
         SystemUsers=new ConcurrentHashMap<>();
         ConUsers=new ConcurrentHashMap<>();
         Messages=new LinkedList<>();
+        connections=ConnectionsImpl.getInstance();
     }
 
 
@@ -80,6 +82,54 @@ public class NetworkSystemData {
         return false;
     }
 
+    public boolean PostMessage(int ConId,Message post,String userNameToSent){
+        if(IsUserLogIn(userNameToSent)&&IsUserLogIn(ConId)){
+            int conIdToSent=ClientConId(userNameToSent);
+            connections.send(conIdToSent,post);
+            for(String follower:ConUsers.get(ConId).getFollowers()){
+                conIdToSent=ClientConId(follower);
+                if(conIdToSent==-1)
+                    SystemUsers.get(follower).AddWaitMessage(post);
+                else
+                    connections.send(conIdToSent,post);
+            }
+            Messages.add(post);
+            return true;
+        }
+        return false;
+    }
+    public boolean PostMessage(int ConId,Message post){
+        if(IsUserLogIn(ConId)) {
+            for (String follower : ConUsers.get(ConId).getFollowers()) {
+                int conIdToSent = ClientConId(follower);
+                if (conIdToSent == -1)
+                    SystemUsers.get(follower).AddWaitMessage(post);
+                else
+                    connections.send(conIdToSent, post);
+            }
+            Messages.add(post);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean IsUserLogIn(String userName)
+    {
+        return SystemUsers.get(userName).IsUserLogIn();
+    }
+
+    public boolean IsUserLogIn(int ConId)
+    {
+        return ConUsers.get(ConId).IsUserLogIn();
+    }
+
+    public int ClientConId(String userName){
+        for(int id :ConUsers.keySet()){
+            if(ConUsers.get(id).getUserName().equals(userName))
+                return id;
+        }
+        return -1;
+    }
 
 }
 
