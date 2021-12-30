@@ -8,6 +8,7 @@ public class LineMessageEncoderDecoder implements MessageEncoderDecoder<String> 
 
     private byte[] bytes = new byte[1 << 10]; //start with 1k
     private int len = 0;
+    boolean opcode=true;
 
     @Override
     public String decodeNextByte(byte nextByte) {
@@ -16,7 +17,6 @@ public class LineMessageEncoderDecoder implements MessageEncoderDecoder<String> 
         if (nextByte == '\n') {
             return popString();
         }
-
         pushByte(nextByte);
         return null; //not a line yet
     }

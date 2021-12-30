@@ -3,7 +3,6 @@ package bgu.spl.net.impl.Messages;
 import bgu.spl.net.impl.User;
 
 import javax.print.DocFlavor;
-import java.util.LinkedList;
 import java.util.List;
 
 public class RegisterMessage extends Message {
@@ -21,11 +20,19 @@ public class RegisterMessage extends Message {
     }
 
     @Override
+    public byte[] encode() {
+        return shortToBytes(opCode);
+    }
+
+    @Override
     public Message process(int conID) {
         User user=new User(userName,password,birthday);
         boolean success=networkSystemData.RegisterClient(userName,user,conID);
-        if(success)
-            return new AckMessage(new LinkedList<>());
-        return new ErrorMessage();
+        List l=new LinkedList();
+        l.add(this);
+        if(success) {
+            return new AckMessage(l);
+        }
+        return new ErrorMessage(l);
     }
 }

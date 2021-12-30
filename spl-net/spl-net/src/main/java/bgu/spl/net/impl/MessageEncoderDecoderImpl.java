@@ -13,7 +13,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
     private final ByteBuffer lengthBuf = ByteBuffer.allocate(2);
     private byte[] bytes = new byte[1 << 10]; //start with 1k
     private int len = 0;
-    private List<Object> arglist;
+    private List<String> arglist;
     private int opCode;
 
     public MessageEncoderDecoderImpl() {
@@ -42,7 +42,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
 
     @Override
     public byte[] encode(Message message) {
-        return null;
+        return message.encode();
     }
 
 
@@ -64,6 +64,12 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         String result = new String(bytes, 0, len, StandardCharsets.UTF_8);
         len = 0;
         arglist.add(result);
+    }
+
+    public short bytesToShort(byte[] byteArr) {
+        short result = (short)((byteArr[0] & 0xff) << 8);
+        result += (short)(byteArr[1] & 0xff);
+        return result;
     }
 
     private Message myCommand(int opCode) {

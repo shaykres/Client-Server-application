@@ -8,8 +8,12 @@ public class PMMessage extends Message{
     }
 
     @Override
+    public byte[] encode() {
+        return shortToBytes(opCode);
+    }
+
+    @Override
     public Message process(int conID) {
         return null;
     }
-
 }

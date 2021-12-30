@@ -14,14 +14,27 @@ public class FollowMessage extends Message {
             follow=true;
         else
             follow=false;
-        userName=(String)arglist.get(1);
+        userName=arglist.get(1);
+    }
+
+    @Override
+    public byte[] encode() {
+        byte[] opcode=shortToBytes(opCode);
+        byte[] body=userName.getBytes(StandardCharsets.UTF_8);
+        byte[] message=new byte[2+body.length+1];
+        message[0]=opcode[0];
+        message[1]=opcode[1];
+        for(int i=0;i<body.length;i++)
+            message[i+2]=body[i];
+        message[message.length-1]=0;
+        return message;
     }
 
     @Override
     public Message process(int conID) {
         boolean success=networkSystemData.FollowClient(conID,follow,userName);
         if(success)
-            return new AckMessage(new LinkedList<>());
+            return new AckMessage();
         return new ErrorMessage();
     }
 }

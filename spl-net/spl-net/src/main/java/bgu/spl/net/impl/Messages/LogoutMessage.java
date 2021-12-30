@@ -10,10 +10,15 @@ public class LogoutMessage extends Message {
     }
 
     @Override
+    public byte[] encode() {
+        return shortToBytes(opCode);
+    }
+
+    @Override
     public Message process(int conID) {
         boolean success=networkSystemData.LogOutClient(conID);
         if(success)
-            return new AckMessage(new LinkedList<>());
+            return new AckMessage();
         return new ErrorMessage();
     }
 }

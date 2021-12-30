@@ -8,7 +8,7 @@ public class LogStatMessage extends Message {
     }
 
     @Override
-    public Message process(int conID) {
-        return null;
+    public byte[] encode() {
+        return new byte[0];
     }
 }
