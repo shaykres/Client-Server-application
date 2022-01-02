@@ -22,7 +22,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final SocketChannel chan;
     private final Reactor reactor;
 
-    public NonBlockingConnectionHandler(
+    public NonBlockingConnectionHandler(int connectionID,
             MessageEncoderDecoder<T> reader,
             BidiMessagingProtocol<T> protocol,
             SocketChannel chan,

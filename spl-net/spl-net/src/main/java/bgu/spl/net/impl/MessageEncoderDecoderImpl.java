@@ -10,50 +10,65 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message> {
-    private final ByteBuffer lengthBuf = ByteBuffer.allocate(2);
+    //private final ByteBuffer lengthBuf = ByteBuffer.allocate(2);
+    private int byteDecode;
+    private byte[] opcode=new byte[2];
     private byte[] bytes = new byte[1 << 10]; //start with 1k
-    private int len = 0;
+    private int len;
     private List<Object> arglist;
     private int opCode;
+    private boolean shouldreset;
 
     public MessageEncoderDecoderImpl() {
         arglist = new ArrayList<>();
         opCode = -1;
+        byteDecode=0;
+        len=0;
+        shouldreset=false;
     }
 
     @Override
     public Message decodeNextByte(byte nextByte) {
         //notice that the top 128 ascii characters have the same representation as their utf-8 counterparts
         //this allow us to do the following comparison
-        if (opCode == -1) {
-            lengthBuf.put(nextByte);
-            if (!lengthBuf.hasRemaining()) {
-                lengthBuf.flip();
-                opCode = lengthBuf.getInt();
-                lengthBuf.clear();
+        if(shouldreset) {
+            reset();
+        }
+        else {
+            if (opCode == -1) {
+                opcode[byteDecode] = nextByte;
+                byteDecode++;
+                if (byteDecode == 2) {
+                    opCode = bytesToShort(opcode);
+                }
+            } else {
+                if (nextByte != ';')
+                    pushByte(nextByte);
+                else {
+                    popString();
+                    shouldreset = true;
+                    return myCommand(opCode);
+                }
             }
-        } else {
-            if (nextByte == ';')
-                pushByte(nextByte);
-            return myCommand(opCode);
         }
         return null;
     }
 
     @Override
     public byte[] encode(Message message) {
+        System.out.println("i am in encode");
         return message.encode();
     }
 
 
     private void pushByte(byte nextByte) {
-        if (nextByte == '\0') {
+      //  System.out.println("i in len "+ len+" i am "+nextByte);
+        if (nextByte == ' ') {
             popString();
         } else {
             if (len >= bytes.length) {
                 bytes = Arrays.copyOf(bytes, len * 2);
             }
-
             bytes[len++] = nextByte;
         }
     }
@@ -104,4 +119,15 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         }
         return null;
     }
+
+    public void reset(){
+        arglist = new ArrayList<>();
+        opCode = -1;
+        byteDecode=0;
+        len=0;
+        shouldreset=false;
+        byte[] opcode=new byte[2];
+        byte[] bytes = new byte[1 << 10]; //start with 1k
+    }
+
 }

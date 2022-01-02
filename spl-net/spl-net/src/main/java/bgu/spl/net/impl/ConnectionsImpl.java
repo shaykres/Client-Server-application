@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConnectionsImpl implements Connections {
+public class ConnectionsImpl<T> implements Connections<T> {
     //private Map<Integer,User> ConnectedUsers;
-    private Map<Integer, ConnectionHandler<Message>> ConnectedUsers;
+    private Map<Integer, ConnectionHandler<T>> ConnectedUsers;
 
     private static ConnectionsImpl instance = null;
     private static boolean isDone = false;
@@ -40,7 +40,7 @@ public class ConnectionsImpl implements Connections {
         if(!ConnectedUsers.containsKey(connectionId))
             return false;
         else{
-            ConnectedUsers.get(connectionId).send((Message)msg);
+            ConnectedUsers.get(connectionId).send((T)msg);
             return true;
         }
     }
@@ -53,5 +53,9 @@ public class ConnectionsImpl implements Connections {
     @Override
     public void disconnect(int connectionId) {
         ConnectedUsers.remove(connectionId);
+    }
+
+    public void AddConnection(int conId,ConnectionHandler<T> connectionHandler){
+        ConnectedUsers.put(conId,connectionHandler);
     }
 }

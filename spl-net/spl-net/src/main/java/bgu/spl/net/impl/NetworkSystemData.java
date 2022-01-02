@@ -52,7 +52,7 @@ public class NetworkSystemData {
         return true;
     }
 
-    public boolean LogInClient(String userName,String password){
+    public boolean LogInClient(int conId,String userName,String password){
         if(!SystemUsers.containsKey(userName))
             return false;
         if(!SystemUsers.get(userName).IsUserLogIn())
@@ -60,6 +60,9 @@ public class NetworkSystemData {
         if(! SystemUsers.get(userName).MatchPass(password))
             return false;
         SystemUsers.get(userName).UserLogIn();
+        while (!SystemUsers.get(userName).getWaitingMessages().isEmpty()){
+            connections.send(conId,SystemUsers.get(userName).getWaitingMessages().poll());
+        }
         return true;
     }
 

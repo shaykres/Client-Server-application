@@ -95,4 +95,8 @@ public class User {
         return Blocked.contains(userName);
     }
 
+    public Queue<Message> getWaitingMessages(){
+        return  WaitingMessages;
+    }
+
 }
