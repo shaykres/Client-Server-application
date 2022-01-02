@@ -105,9 +105,9 @@ public class NetworkSystemData {
                 else
                     connections.send(conIdToSent,notificationMessage);
             }
-            ConUsers.get(ConId).setNumPost();
+            ConUsers.get(conId).setNumPost();
             Messages.add(post);
-            ConUsers.get(ConId).setNumPost();
+            ConUsers.get(conId).setNumPost();
             return true;
         }
         return false;

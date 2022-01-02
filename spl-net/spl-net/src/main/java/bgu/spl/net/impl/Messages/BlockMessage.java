@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.Messages;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,15 @@ public class BlockMessage extends Message{
 
     @Override
     public byte[] encode() {
-        return new byte[0];
+        byte[] opcode=shortToBytes(opCode);
+        byte[] body=UserNameToBlock.getBytes(StandardCharsets.UTF_8);
+        byte[] message=new byte[2+body.length+1];
+        message[0]=opcode[0];
+        message[1]=opcode[1];
+        for(int i=0;i<body.length;i++)
+            message[2+i]=body[i];
+        message[2+body.length]=0;
+        return message;
     }
 
     @Override
