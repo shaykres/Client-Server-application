@@ -1,6 +1,7 @@
 package bgu.spl.net.impl;
 
 import bgu.spl.net.impl.Messages.Message;
+import bgu.spl.net.impl.Messages.NotificationMessage;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class NetworkSystemData {
     private Map<Integer,User> ConUsers;//All users connected to server
     private List<Message> Messages;
     private ConnectionsImpl connections;
+    private List<String> filterWords;
 
 
     private NetworkSystemData() {
@@ -23,6 +25,7 @@ public class NetworkSystemData {
         ConUsers=new ConcurrentHashMap<>();
         Messages=new LinkedList<>();
         connections=ConnectionsImpl.getInstance();
+        filterWords=new LinkedList<>();
     }
 
 
@@ -68,30 +71,39 @@ public class NetworkSystemData {
        return true;
     }
 
-    public boolean FollowClient(int conID,boolean tofollow,String userName){
-        if(!ConUsers.containsKey(conID))
+    public boolean FollowClient(int conId,boolean tofollow,String userName){
+        if(!ConUsers.containsKey(conId)||!SystemUsers.containsKey(userName))
             return false;
-        if(tofollow&&!ConUsers.get(conID).isFollowing(userName)){
-            ConUsers.get(conID).follow(userName);
+        if(tofollow&&!ConUsers.get(conId).isFollowing(userName)){
+            if(SystemUsers.get(userName).isUserBlock(ConUsers.get(conId).getUserName()))
+                return false;
+            ConUsers.get(conId).follow(userName);
             return true;
         }
-        if(!tofollow&&ConUsers.get(conID).isFollowing(userName)){
-            ConUsers.get(conID).Unfollow(userName);
+        if(!tofollow&&ConUsers.get(conId).isFollowing(userName)){
+            ConUsers.get(conId).Unfollow(userName);
             return true;
         }
         return false;
     }
 
-    public boolean PostMessage(int ConId,Message post,String userNameToSent){
-        if(IsUserLogIn(userNameToSent)&&IsUserLogIn(ConId)){
+    public boolean PostMessage(int conId,Message post,String userNameToSent){
+        if(IsUserLogIn(userNameToSent)&&IsUserLogIn(conId)){
             int conIdToSent=ClientConId(userNameToSent);
-            connections.send(conIdToSent,post);
-            for(String follower:ConUsers.get(ConId).getFollowers()){
+           // connections.send(conIdToSent,post);
+            List<Object> l=new LinkedList<>();
+            l.add(ConUsers.get(conId).getUserName());
+            l.add(post);
+            NotificationMessage notificationMessage=new NotificationMessage(l);
+            if(SystemUsers.get(userNameToSent).isUserBlock(ConUsers.get(conId).getUserName()))
+                return false;
+            connections.send(conIdToSent,notificationMessage);
+            for(String follower:ConUsers.get(conId).getFollowers()){
                 conIdToSent=ClientConId(follower);
                 if(conIdToSent==-1)
-                    SystemUsers.get(follower).AddWaitMessage(post);
+                    SystemUsers.get(follower).AddWaitMessage(notificationMessage);
                 else
-                    connections.send(conIdToSent,post);
+                    connections.send(conIdToSent,notificationMessage);
             }
             Messages.add(post);
             return true;
@@ -99,13 +111,17 @@ public class NetworkSystemData {
         return false;
     }
     public boolean PostMessage(int ConId,Message post){
+        List<Object> l=new LinkedList<>();
+        l.add(ConUsers.get(ConId).getUserName());
+        l.add(post);
+        NotificationMessage notificationMessage=new NotificationMessage(l);
         if(IsUserLogIn(ConId)) {
             for (String follower : ConUsers.get(ConId).getFollowers()) {
                 int conIdToSent = ClientConId(follower);
                 if (conIdToSent == -1)
-                    SystemUsers.get(follower).AddWaitMessage(post);
+                    SystemUsers.get(follower).AddWaitMessage(notificationMessage);
                 else
-                    connections.send(conIdToSent, post);
+                    connections.send(conIdToSent, notificationMessage);
             }
             Messages.add(post);
             return true;
@@ -129,6 +145,49 @@ public class NetworkSystemData {
                 return id;
         }
         return -1;
+    }
+
+    public boolean SendPrivateMessage(int conId,String userName,Message pm){
+        if(!ConUsers.containsKey(conId))
+            return false;
+        if(!IsUserLogIn(conId))
+            return false;
+      if(!IsUserRegistered(userName))
+          return false;
+      if(!ConUsers.get(conId).isFollowing(userName))
+          return false;
+        if(SystemUsers.get(userName).isUserBlock(ConUsers.get(conId).getUserName()))
+            return false;
+        List<Object> l=new LinkedList<>();
+        l.add(ConUsers.get(conId).getUserName());
+        l.add(pm);
+        NotificationMessage notificationMessage=new NotificationMessage(l);
+        int conIdToSent = ClientConId(userName);
+        if (conIdToSent == -1)
+            SystemUsers.get(userName).AddWaitMessage(notificationMessage);
+        else
+            connections.send(conIdToSent, notificationMessage);
+        Messages.add(pm);
+        return true;
+    }
+
+    public boolean IsUserRegistered(String userName){
+        return SystemUsers.containsKey(userName);
+    }
+
+    public boolean isFilterWord(String word){
+        return filterWords.contains(word);
+    }
+
+    public boolean BlockUser(int conId,String userToBlock){
+        if(!SystemUsers.containsKey(userToBlock))
+            return false;
+        if(!IsUserLogIn(conId))
+            return false;
+        ConUsers.get(conId).BlockUser(userToBlock);
+        SystemUsers.get(userToBlock).Unfollow( ConUsers.get(conId).getUserName());
+        SystemUsers.get(userToBlock).RemoveFollower(ConUsers.get(conId).getUserName());
+        return true;
     }
 
 }

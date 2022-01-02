@@ -7,6 +7,7 @@ public class ErrorMessage extends Message {
     public ErrorMessage(List<Object> argList) {
         super(argList);
         opCode=11;
+
     }
 
     @Override
@@ -18,6 +19,7 @@ public class ErrorMessage extends Message {
         message[1]=opcode[1];
         message[2]=subject[0];
         message[3]=subject[1];
+
         return message;
     }
 

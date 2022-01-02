@@ -4,15 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PostMessage extends Message {
-    private String Content;
+    private String content;
     private String userNameSentTo;
     public PostMessage(List<Object> arglist) {
         super(arglist);
-        Content=(String)arglist.get(0);
+        content=(String)arglist.get(0);
         userNameSentTo="";
-        if(Content.contains("@")){
-            int StartUserName=Content.indexOf("@")+1;
-            userNameSentTo=Content.substring(StartUserName);
+        if(content.contains("@")){
+            int StartUserName=content.indexOf("@")+1;
+            userNameSentTo=content.substring(StartUserName);
             userNameSentTo=userNameSentTo.substring(0,userNameSentTo.indexOf(" "));
         }
     }
@@ -36,4 +36,10 @@ public class PostMessage extends Message {
             return new AckMessage(l);
         return new ErrorMessage(l);
     }
+
+    public String getContent(){
+        return content;
+    }
+
 }
+

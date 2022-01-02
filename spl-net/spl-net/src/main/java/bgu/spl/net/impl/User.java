@@ -16,6 +16,7 @@ public class User {
     private List<String> followers;
     private boolean LogIn;
     private Queue<Message> WaitingMessages;
+    private List<String> Blocked;
 
     public User(String name,String password,String birthday){
         this.name=name;
@@ -25,6 +26,7 @@ public class User {
         followers=new LinkedList<>();
         LogIn=false;
         WaitingMessages=new LinkedList<>();
+        Blocked=new LinkedList<>();
     }
 
     public void UserLogIn(){
@@ -55,6 +57,10 @@ public class User {
         following.remove(userName);
     }
 
+    public void RemoveFollower(String userName){
+        followers.remove(userName);
+    }
+
     public String getUserName(){return name;}
 
     public List<String> getFollowers(){
@@ -63,6 +69,16 @@ public class User {
 
     public void AddWaitMessage(Message message){
         WaitingMessages.add(message);
+    }
+
+    public void BlockUser(String userName){
+        Blocked.add(userName);
+        following.remove(userName);
+        followers.remove(userName);
+    }
+
+    public boolean isUserBlock(String userName){
+        return Blocked.contains(userName);
     }
 
 }

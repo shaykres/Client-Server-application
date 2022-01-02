@@ -98,6 +98,9 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
             case 8:
                 return new StatMessage(arglist);
 
+            case 12:
+                return new BlockMessage(arglist);
+
         }
         return null;
     }

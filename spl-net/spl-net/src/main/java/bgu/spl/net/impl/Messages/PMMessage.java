@@ -1,10 +1,24 @@
 package bgu.spl.net.impl.Messages;
 
+import bgu.spl.net.impl.NetworkSystemData;
+
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PMMessage extends Message{
+    private String userName;
+    private String content;
+    private Date dateAndTime;
     public PMMessage(List<Object> arglist) {
         super(arglist);
+        userName=(String)arglist.get(0);
+        content=(String)arglist.get(1);
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm");
+        dateAndTime = new Date(System.currentTimeMillis());
+        //formatter.format(dateAndTime) - to get it by the right format
     }
 
     @Override
@@ -14,6 +28,33 @@ public class PMMessage extends Message{
 
     @Override
     public Message process(int conID) {
-        return null;
+        boolean registerdUser=networkSystemData.IsUserRegistered(userName);
+        FilterMessage();
+        boolean success=networkSystemData.SendPrivateMessage(conID,userName,this);
+        List l=new LinkedList();
+        l.add(this);
+        if(!registerdUser) {
+            l.add(userName+" isn't applicable for private messages");
+            return new ErrorMessage(l);
+        }
+        if(success)
+            return new AckMessage(l);
+        return new ErrorMessage(l);
+    }
+
+    private void FilterMessage(){
+        String newContent="";
+        String[] splited = content.split(" ");
+        for(int i=0; i<splited.length; i++){
+            if(networkSystemData.isFilterWord(splited[i]))
+                newContent+="<filtered> ";
+            else
+                newContent+=splited[i]+" ";
+        }
+        content=newContent;
+    }
+
+    public String getContent(){
+        return content;
     }
 }
