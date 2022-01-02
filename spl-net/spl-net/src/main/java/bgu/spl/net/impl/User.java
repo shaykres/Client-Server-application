@@ -16,6 +16,7 @@ public class User {
     private List<String> followers;
     private boolean LogIn;
     private Queue<Message> WaitingMessages;
+    private int numPost;
     private List<String> Blocked;
 
     public User(String name,String password,String birthday){
@@ -27,6 +28,7 @@ public class User {
         LogIn=false;
         WaitingMessages=new LinkedList<>();
         Blocked=new LinkedList<>();
+        numPost=0;
     }
 
     public void UserLogIn(){
@@ -40,6 +42,18 @@ public class User {
     public boolean IsUserLogIn(){
         return LogIn;
     }
+
+    public String getBirthday(){return birthday;}
+
+    public int getnumPost(){return numPost;}
+    public int getNumOfFollowers(){
+        return followers.size();
+    }
+    public int getNumOffollowing(){
+        return following.size();
+    }
+
+    public void setNumPost(){numPost++;}
 
     public boolean MatchPass(String pass){
         return password.equals(pass);

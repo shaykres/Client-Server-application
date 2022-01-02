@@ -105,7 +105,28 @@ public class NetworkSystemData {
                 else
                     connections.send(conIdToSent,notificationMessage);
             }
+            ConUsers.get(ConId).setNumPost();
             Messages.add(post);
+            ConUsers.get(ConId).setNumPost();
+            return true;
+        }
+        return false;
+    }
+    public boolean LogStat(int ConId,List<User> users) {
+        if(IsUserLogIn(ConId)) {
+            for(int i=0;i<ConUsers.size();i++)
+                users.add(ConUsers.get(i));
+            return true;
+        }
+        return false;
+    }
+    public boolean Stat(int ConId,List<String> usernames,List<User> users) {
+        if(IsUserLogIn(ConId)) {
+            for(int i=0;i<usernames.size();i++) {
+               if(!SystemUsers.containsKey(usernames.get(i)))
+                   return false;
+               users.add(SystemUsers.get(usernames.get(i)));
+            }
             return true;
         }
         return false;
@@ -128,7 +149,6 @@ public class NetworkSystemData {
         }
         return false;
     }
-
     public boolean IsUserLogIn(String userName)
     {
         return SystemUsers.get(userName).IsUserLogIn();
