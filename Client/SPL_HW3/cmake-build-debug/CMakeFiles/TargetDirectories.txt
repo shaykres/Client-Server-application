@@ -1,3 +1,3 @@
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/cmake-build-debug/CMakeFiles/edit_cache.dir
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir
+/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug/CMakeFiles/edit_cache.dir
+/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir

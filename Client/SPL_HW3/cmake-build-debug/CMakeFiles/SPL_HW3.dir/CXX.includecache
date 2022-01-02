@@ -6,17 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/include/Task.h
-iostream
--
-mutex
--
-thread
--
-../include/connectionHandler.h
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/include/connectionHandler.h
-
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/include/connectionHandler.h
+/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/include/connectionHandler.h
 string
 -
 iostream
@@ -24,13 +14,9 @@ iostream
 boost/asio.hpp
 -
 
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/src/echoClient.cpp
-stdlib.h
--
+/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/src/connectionHandler.cpp
 ../include/connectionHandler.h
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/include/connectionHandler.h
-../include/Task.h
-/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/include/Task.h
+/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/include/connectionHandler.h
 
 /cygdrive/c/Users/Shay/cygwin64/usr/include/_ansi.h
 newlib.h

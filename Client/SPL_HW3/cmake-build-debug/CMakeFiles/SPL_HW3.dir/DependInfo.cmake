@@ -8,9 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/src/Task.cpp" "/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir/src/Task.cpp.o"
-  "/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/src/connectionHandler.cpp" "/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir/src/connectionHandler.cpp.o"
-  "/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/src/echoClient.cpp" "/cygdrive/c/Users/Shay/CLionProjects/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir/src/echoClient.cpp.o"
+  "/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/src/Task.cpp" "/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir/src/Task.cpp.o"
+  "/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/src/connectionHandler.cpp" "/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir/src/connectionHandler.cpp.o"
+  "/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/src/echoClient.cpp" "/cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug/CMakeFiles/SPL_HW3.dir/src/echoClient.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

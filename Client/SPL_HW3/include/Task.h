@@ -12,12 +12,10 @@
 
 class Task{
 private:
-    int _id;
-    std::mutex& _mutex;
-    ConnectionHandler& _connectionHandler;
+    ConnectionHandler* _connectionHandler;
     bool _terminated;
 public:
-    Task(int id,ConnectionHandler& connectionHandler, std::mutex& mutex);
+    Task(ConnectionHandler* connectionHandler);
     void run();
 };
 

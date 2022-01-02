@@ -18,15 +18,18 @@ bool ConnectionHandler::connect() {
         << host_ << ":" << port_ << std::endl;
     try {
 		tcp::endpoint endpoint(boost::asio::ip::address::from_string(host_), port_); // the server endpoint
+
 		boost::system::error_code error;
 		socket_.connect(endpoint, error);
-		if (error)
-			throw boost::system::system_error(error);
+		if (error) {
+            throw boost::system::system_error(error);
+        }
     }
     catch (std::exception& e) {
         std::cerr << "Connection failed (Error: " << e.what() << ')' << std::endl;
         return false;
     }
+
     return true;
 }
  
@@ -50,6 +53,8 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
     int tmp = 0;
 	boost::system::error_code error;
     try {
+        for(int i=0;i<bytesToWrite;i++)
+            std::cout << bytes[i] <<"hello"<< std::endl;
         while (!error && bytesToWrite > tmp ) {
 			tmp += socket_.write_some(boost::asio::buffer(bytes + tmp, bytesToWrite - tmp), error);
         }
@@ -63,7 +68,7 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
  
 bool ConnectionHandler::getLine(std::string& line) {
-    return getFrameAscii(line, '\n');
+    return getFrameAscii(line, ';');
 }
 
 bool ConnectionHandler::sendLine(std::string& line) {
@@ -76,11 +81,20 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
     // Stop when we encounter the null character. 
     // Notice that the null character is not appended to the frame string.
     try {
-        getBytes(byte, 2);
+        std::cout << "shay diiiiiiiiiiiiiiiiiii" << std::endl;
+        getBytes(&ch, 1);
+        byte[0]=ch;
+        getBytes(&ch, 1);
+        byte[1]=ch;
         short opcode=bytesToShort(byte);
         if(opcode==10||opcode==11){
-            getBytes(byte, 2);
+            getBytes(&ch, 1);
+            byte[0]=ch;
+            getBytes(&ch, 1);
+            byte[1]=ch;
+            std::cout << opcode << std::endl;
             short subject=bytesToShort(byte);
+            std::cout << subject << std::endl;
             if(opcode==10){
                frame+="ACK "+std::to_string(subject);
             }
