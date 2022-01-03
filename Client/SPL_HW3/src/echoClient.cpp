@@ -42,8 +42,11 @@ int main (int argc, char *argv[]) {
 
 	//From here we will see the rest of the ehco client implementation:
     while (1) {
+
         const short bufsize = 1024;
         char buf[bufsize];
+
+
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
         std::vector<std::string> words;
@@ -67,7 +70,10 @@ int main (int argc, char *argv[]) {
         }
 		// connectionHandler.sendLine(line) appends '\n' to the message. Therefor we send len+1 bytes.
         std::cout << "Sent " << len+1 << " bytes to server" << std::endl;
-
+        if(readFromSocketTask.isTerminated()) {
+            std::cout << "!!!!!!!!!!!" << std::endl;
+            break;
+        }
         // We can use one of three options to read data from the server:
         // 1. Read a fixed number of characters
         // 2. Read a line (up to the newline character using the getline() buffered reader
