@@ -49,6 +49,8 @@ public:
     void close();
 
     short bytesToShort(char* bytesArr);
+
+    std::string sevenOr8();
 }; //class ConnectionHandler
  
 #endif

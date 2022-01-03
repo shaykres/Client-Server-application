@@ -85,12 +85,10 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
     try {
         std::cout << "i before opcode" << std::endl;
         getBytes(&ch, 1);
-        std::cout << "i after opcode" << std::endl;
         byte[0]=ch;
         std::cout << "i after opcode" << std::endl;
         getBytes(&ch, 1);
         byte[1]=ch;
-
         short opcode=bytesToShort(byte);
         if(opcode==10||opcode==11){
             getBytes(&ch, 1);
@@ -102,6 +100,8 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
             std::cout << subject << std::endl;
             if(opcode==10){
                frame+="ACK "+std::to_string(subject);
+               if(subject==7||subject==8)
+                   frame+=" "+ sevenOr8();
             }
             if(opcode==11)
                 frame+="ERROR "+std::to_string(subject);
@@ -115,7 +115,6 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
 
 		do{
 			getBytes(&ch, 1);
-            frame.append(1, ch);
         }while (delimiter != ch);
     } catch (std::exception& e) {
         std::cerr << "recv failed (Error: " << e.what() << ')' << std::endl;
@@ -145,4 +144,32 @@ short ConnectionHandler::bytesToShort(char *bytesArr) {
     result += (short)(bytesArr[1] & 0xff);
     return result;
 }
+
+std::string ConnectionHandler::sevenOr8() {
+    char* byte= new char[2];
+    char ch;
+    getBytes(&ch, 1);
+    byte[0]=ch;
+    getBytes(&ch, 1);
+    byte[1]=ch;
+    short age=bytesToShort(byte);
+    getBytes(&ch, 1);
+    byte[0]=ch;
+    getBytes(&ch, 1);
+    byte[1]=ch;
+    short numPost=bytesToShort(byte);
+    getBytes(&ch, 1);
+    byte[0]=ch;
+    getBytes(&ch, 1);
+    byte[1]=ch;
+    short numfollowers=bytesToShort(byte);
+    getBytes(&ch, 1);
+    byte[0]=ch;
+    getBytes(&ch, 1);
+    byte[1]=ch;
+    short numfollowing=bytesToShort(byte);
+    string everything=std::to_string(age)+" "+std::to_string(numPost)+" "+std::to_string(numfollowers)+" "+std::to_string(numfollowing);
+    return everything;
+}
+
 
