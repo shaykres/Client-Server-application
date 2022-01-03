@@ -52,12 +52,14 @@ public class NetworkSystemData {
         return true;
     }
 
-    public boolean LogInClient(int conId,String userName,String password){
+    public boolean LogInClient(int conId,String userName,String password,char captcha){
         if(!SystemUsers.containsKey(userName))
             return false;
-        if(!SystemUsers.get(userName).IsUserLogIn())
+        if(SystemUsers.get(userName).IsUserLogIn())
             return false;
         if(! SystemUsers.get(userName).MatchPass(password))
+            return false;
+        if(captcha=='0')
             return false;
         SystemUsers.get(userName).UserLogIn();
         while (!SystemUsers.get(userName).getWaitingMessages().isEmpty()){

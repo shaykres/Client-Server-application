@@ -43,10 +43,6 @@ public class ObjectEncoderDecoder implements MessageEncoderDecoder<Serializable>
         return serializeObject(message);
     }
 
-    @Override
-    public void reset() {
-
-    }
 
     private Serializable deserializeObject() {
         try {

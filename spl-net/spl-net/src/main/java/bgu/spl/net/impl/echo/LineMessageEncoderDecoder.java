@@ -26,10 +26,6 @@ public class LineMessageEncoderDecoder implements MessageEncoderDecoder<String> 
         return (message + "\n").getBytes(); //uses utf8 by default
     }
 
-    @Override
-    public void reset() {
-
-    }
 
     private void pushByte(byte nextByte) {
         if (len >= bytes.length) {
