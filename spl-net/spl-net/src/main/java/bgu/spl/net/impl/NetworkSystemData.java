@@ -71,8 +71,11 @@ public class NetworkSystemData {
     public boolean LogOutClient(int conID){
         if(!ConUsers.containsKey(conID))
             return false;
+        if(!ConUsers.get(conID).IsUserLogIn())
+            return false;
        ConUsers.get(conID).UserLogOut();
        ConUsers.remove(conID);
+       connections.disconnect(conID);
        return true;
     }
 
