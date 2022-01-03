@@ -22,7 +22,7 @@ int main (int argc, char *argv[]) {
         std::cerr << "Cann->t connect to " << host << ":" << port << std::endl;
         return 1;
     }
-
+    std::cout << "Sent djjdjdjdj bytes to server" << std::endl;
     std::map<std::string ,short> CommandMap;
     CommandMap["REGISTER"]=1;
     CommandMap["LOGIN"]=2;
