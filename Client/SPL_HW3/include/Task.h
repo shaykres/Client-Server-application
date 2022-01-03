@@ -17,6 +17,7 @@ private:
 public:
     Task(ConnectionHandler* connectionHandler);
     void run();
+    bool isTerminated();
 };
 
 #endif //SPL_HW3_TASK_H
