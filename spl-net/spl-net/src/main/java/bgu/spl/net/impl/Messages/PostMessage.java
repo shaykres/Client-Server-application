@@ -8,6 +8,7 @@ public class PostMessage extends Message {
     private String userNameSentTo;
     public PostMessage(List<Object> arglist) {
         super(arglist);
+        opCode=5;
         content=(String)arglist.get(0);
         userNameSentTo="";
         if(content.contains("@")){

@@ -58,7 +58,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
 
     @Override
     public byte[] encode(Message message) {
-        System.out.println("i am in encode");
+        System.out.println("i am in encode"+message.toString());
         return message.encode();
     }
 

@@ -23,7 +23,7 @@ public class StatMessage extends Message {
         byte[] message=new byte[13*users.size()];
         if(users.size()==0){
             byte[]noting=new byte[4];
-            byte[]opcodeack=shortToBytes((short)11);
+            byte[]opcodeack=shortToBytes((short)10);
             noting[0]=opcodeack[0];
             noting[1]=opcodeack[1];
             byte[]opcode=shortToBytes(opCode);
@@ -32,7 +32,7 @@ public class StatMessage extends Message {
             return noting;
         }
         for (User u: users) {
-            byte[]opcodeack=shortToBytes((short)11);
+            byte[]opcodeack=shortToBytes((short)10);
             message[0]=opcodeack[0];
             message[1]=opcodeack[1];
             byte[]opcode=shortToBytes(opCode);

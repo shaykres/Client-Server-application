@@ -14,6 +14,7 @@ public class LogStatMessage extends Message {
 
     public LogStatMessage(List<Object> arglist) {
         super(arglist);
+        opCode=7;
         users=new LinkedList<>();
     }
 
@@ -22,7 +23,7 @@ public class LogStatMessage extends Message {
         byte[] message=new byte[13*users.size()];
         if(users.size()==0){
             byte[]noting=new byte[4];
-            byte[]opcodeack=shortToBytes((short)11);
+            byte[]opcodeack=shortToBytes((short)10);
             noting[0]=opcodeack[0];
             noting[1]=opcodeack[1];
             byte[]opcode=shortToBytes(opCode);
@@ -31,7 +32,7 @@ public class LogStatMessage extends Message {
             return noting;
         }
         for (User u: users) {
-            byte[]opcodeack=shortToBytes((short)11);
+            byte[]opcodeack=shortToBytes((short)10);
             message[0]=opcodeack[0];
             message[1]=opcodeack[1];
             byte[]opcode=shortToBytes(opCode);
@@ -51,11 +52,11 @@ public class LogStatMessage extends Message {
             message[6]=numOfPost[0];
             message[7]=numOfPost[1];
             byte[]numOffollowers=shortToBytes((short)u.getNumOfFollowers());
-            message[8]=numOfPost[0];
-            message[9]=numOfPost[1];
+            message[8]=numOffollowers[0];
+            message[9]=numOffollowers[1];
             byte[]numOffollowing=shortToBytes((short)u.getNumOffollowing());
-            message[10]=numOfPost[0];
-            message[11]=numOfPost[1];
+            message[10]=numOffollowing[0];
+            message[11]=numOffollowing[1];
             message[12]=';';
         }
         return message;

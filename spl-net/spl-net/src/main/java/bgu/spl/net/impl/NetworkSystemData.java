@@ -79,6 +79,10 @@ public class NetworkSystemData {
     public boolean FollowClient(int conId,boolean tofollow,String userName){
         if(!ConUsers.containsKey(conId)||!SystemUsers.containsKey(userName))
             return false;
+        if(!IsUserLogIn(conId))
+            return false;
+        if(ConUsers.get(conId).getUserName().equals(userName))
+            return false;
         if(tofollow&&!ConUsers.get(conId).isFollowing(userName)){
             if(SystemUsers.get(userName).isUserBlock(ConUsers.get(conId).getUserName()))
                 return false;
@@ -112,7 +116,6 @@ public class NetworkSystemData {
             }
             ConUsers.get(conId).setNumPost();
             Messages.add(post);
-            ConUsers.get(conId).setNumPost();
             return true;
         }
         return false;
@@ -150,6 +153,7 @@ public class NetworkSystemData {
                     connections.send(conIdToSent, notificationMessage);
             }
             Messages.add(post);
+            ConUsers.get(ConId).setNumPost();
             return true;
         }
         return false;
@@ -161,7 +165,9 @@ public class NetworkSystemData {
 
     public boolean IsUserLogIn(int ConId)
     {
-        return ConUsers.get(ConId).IsUserLogIn();
+        if(ConUsers.containsKey(ConId))
+            return ConUsers.get(ConId).IsUserLogIn();
+        return false;
     }
 
     public int ClientConId(String userName){

@@ -20,4 +20,8 @@ public abstract class Message {
         bytesArr[1] = (byte)(num & 0xFF);
         return bytesArr;
     }
+    @Override
+    public String toString(){
+        return " "+opCode;
+    }
 }
