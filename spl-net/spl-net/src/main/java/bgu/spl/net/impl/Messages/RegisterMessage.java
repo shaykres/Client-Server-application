@@ -27,11 +27,13 @@ public class RegisterMessage extends Message {
 
     @Override
     public Message process(int conID) {
+       // System.out.println("i am in process");
         User user=new User(userName,password,birthday);
         boolean success=networkSystemData.RegisterClient(userName,user,conID);
         List l=new LinkedList();
         l.add(this);
         if(success) {
+            System.out.println("i am in succsess");
             return new AckMessage(l);
         }
         return new ErrorMessage(l);

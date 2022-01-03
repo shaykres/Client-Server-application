@@ -14,7 +14,7 @@ public abstract class Message {
     }
    public abstract byte[]  encode();
    public abstract Message process(int conID);
-   public byte[] shortToBytes(short num) {
+    public byte[] shortToBytes(short num) {
         byte[] bytesArr = new byte[2];
         bytesArr[0] = (byte)((num >> 8) & 0xFF);
         bytesArr[1] = (byte)(num & 0xFF);
