@@ -12,7 +12,7 @@ public class LoginMessage extends Message {
         opCode=2;
         userName=(String)arglist.get(0);
         password=(String)arglist.get(1);
-        captcha=(char)arglist.get(2);
+        captcha=((String)arglist.get(2)).charAt(0);
         //utilize captcha
     }
 
@@ -23,7 +23,7 @@ public class LoginMessage extends Message {
 
     @Override
     public Message process(int conID) {
-        boolean success=networkSystemData.LogInClient(conID,userName,password);
+        boolean success=networkSystemData.LogInClient(conID,userName,password,captcha);
         List l=new LinkedList();
         l.add(this);
         if(success)

@@ -11,7 +11,7 @@ Task::  Task(ConnectionHandler* connectionHandler) :_connectionHandler(connectio
 void Task::run() {
     while(!_terminated) {
         std::string answer;
-        std::cout << "dgdggdggdgdgdggggggd "<< std::endl;
+       // std::cout << "dgdggdggdgdgdggggggd "<< std::endl;
         // Get back an answer: by using the expected number of bytes (len bytes + newline delimiter)
         // We could also use: connectionHandler.getline(answer) and then get the answer without the newline char at the end
         if (!_connectionHandler->getLine(answer)) {

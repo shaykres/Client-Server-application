@@ -14,6 +14,7 @@ public class RegisterMessage extends Message {
 
     public RegisterMessage(List<Object> argList) {
         super(argList);
+        System.out.println("i build register");
         opCode=1;
         userName=(String)argList.get(0);
         password=(String)argList.get(1);
@@ -32,6 +33,7 @@ public class RegisterMessage extends Message {
         boolean success=networkSystemData.RegisterClient(userName,user,conID);
         List l=new LinkedList();
         l.add(this);
+        System.out.println("I success?"+success);
         if(success) {
             System.out.println("i am in succsess");
             return new AckMessage(l);

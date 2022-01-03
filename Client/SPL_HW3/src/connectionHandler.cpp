@@ -53,8 +53,8 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
     int tmp = 0;
 	boost::system::error_code error;
     try {
-        for(int i=0;i<bytesToWrite;i++)
-            std::cout << bytes[i] <<"hello"<< std::endl;
+      // for(int i=0;i<bytesToWrite;i++)
+       //     std::cout << bytes[i] <<"hello"<< std::endl;
         while (!error && bytesToWrite > tmp ) {
 			tmp += socket_.write_some(boost::asio::buffer(bytes + tmp, bytesToWrite - tmp), error);
         }
@@ -105,11 +105,14 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
             }
             if(opcode==11)
                 frame+="ERROR "+std::to_string(subject);
+            if(delimiter != ch)
+                frame+=" ";
         }
         if(opcode==9)
             frame+="NOTIFICATION ";
         if(opcode==12)
             frame+="BLOCK ";
+
 		do{
 			getBytes(&ch, 1);
             frame.append(1, ch);
