@@ -26,7 +26,7 @@ void Task::run() {
             std::cout << "Reply: " << answer  << std::endl << std::endl;
             if (std::equal(answer.begin(), answer.end(), "ACK 2") ) {
                 login = true;
-                std::cout << "user log in" << std::endl;
+               // std::cout << "user log in" << std::endl;
             }
 
             if (std::equal(answer.begin(), answer.end(), "ACK 3") ) {

@@ -22,7 +22,7 @@ int main (int argc, char *argv[]) {
         std::cerr << "Cann->t connect to " << host << ":" << port << std::endl;
         return 1;
     }
-    std::cout << "Sent djjdjdjdj bytes to server" << std::endl;
+    //std::cout << "Sent djjdjdjdj bytes to server" << std::endl;
     std::map<std::string ,short> CommandMap;
     CommandMap["REGISTER"]=1;
     CommandMap["LOGIN"]=2;
@@ -35,7 +35,7 @@ int main (int argc, char *argv[]) {
 //    CommandMap["NOTIFICATION"]=9;
 //    CommandMap["ACK"]=10;
 //    CommandMap["ERROR"]=11;
-//    CommandMap["BLOCK"]=12;
+   CommandMap["BLOCK"]=12;
 
     Task readFromSocketTask(connectionHandler);
     std::thread th1(&Task::run,&readFromSocketTask);
@@ -52,7 +52,6 @@ int main (int argc, char *argv[]) {
         else
             userLineIsLogOut= false;
 
-        std::vector<std::string> words;
         int endofkeywork=line.find(' ');
         std::string keyword=line.substr(0,endofkeywork);
         int opcode=CommandMap[keyword];
@@ -72,7 +71,7 @@ int main (int argc, char *argv[]) {
             break;
         }
 		// connectionHandler.sendLine(line) appends '\n' to the message. Therefor we send len+1 bytes.
-        std::cout << "Sent " << len+1 << " bytes to server" << std::endl;
+       // std::cout << "Sent " << len+1 << " bytes to server" << std::endl;
 
         if(userLineIsLogOut&&readFromSocketTask.isLogIn())
             break;

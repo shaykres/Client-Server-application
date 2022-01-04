@@ -68,12 +68,12 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
  
 bool ConnectionHandler::getLine(std::string& line) {
-    std::cout << "get line" << std::endl;
+    //std::cout << "get line" << std::endl;
     return getFrameAscii(line, ';');
 }
 
 bool ConnectionHandler::sendLine(std::string& line) {
-    std::cout << "sent line" << std::endl;
+    //std::cout << "sent line" << std::endl;
     return sendFrameAscii(line, ';');
 }
  
@@ -83,10 +83,10 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
     // Stop when we encounter the null character. 
     // Notice that the null character is not appended to the frame string.
     try {
-        std::cout << "i before opcode" << std::endl;
+       // std::cout << "i before opcode" << std::endl;
         getBytes(&ch, 1);
         byte[0]=ch;
-        std::cout << "i after opcode" << std::endl;
+       // std::cout << "i after opcode" << std::endl;
         getBytes(&ch, 1);
         byte[1]=ch;
         short opcode=bytesToShort(byte);
@@ -95,7 +95,7 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
             byte[0]=ch;
             getBytes(&ch, 1);
             byte[1]=ch;
-            std::cout << opcode << std::endl;
+           // std::cout << opcode << std::endl;
             short subject=bytesToShort(byte);
             std::cout << subject << std::endl;
             if(opcode==10){
