@@ -1,5 +1,6 @@
 package bgu.spl.net.impl;
 
+import bgu.spl.net.impl.Messages.LogStatMessage;
 import bgu.spl.net.impl.Messages.Message;
 import bgu.spl.net.impl.Messages.NotificationMessage;
 
@@ -89,10 +90,12 @@ public class NetworkSystemData {
             if(SystemUsers.get(userName).isUserBlock(ConUsers.get(conId).getUserName()))
                 return false;
             ConUsers.get(conId).follow(userName);
+            SystemUsers.get(userName).AddFollower(ConUsers.get(conId).getUserName());
             return true;
         }
         if(!tofollow&&ConUsers.get(conId).isFollowing(userName)){
             ConUsers.get(conId).Unfollow(userName);
+            SystemUsers.get(userName).RemoveFollower(ConUsers.get(conId).getUserName());
             return true;
         }
         return false;
@@ -122,9 +125,9 @@ public class NetworkSystemData {
         }
         return false;
     }
-    public boolean LogStat(int ConId,List<User> users) {
-        String userName=ConUsers.get(ConId).getUserName();
+    public boolean LogStat(int ConId, List<User> users) {
         if(IsUserLogIn(ConId)) {
+            String userName=ConUsers.get(ConId).getUserName();
             for(User u :ConUsers.values()) {
                 if(u.IsUserLogIn()&&!u.isUserBlock(userName)&&!ConUsers.get(ConId).isUserBlock(u.getUserName()))
                     users.add(u);

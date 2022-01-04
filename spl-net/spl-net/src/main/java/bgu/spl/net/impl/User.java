@@ -71,6 +71,10 @@ public class User {
         following.remove(userName);
     }
 
+    public void AddFollower(String userName){
+        followers.add(userName);
+    }
+
     public void RemoveFollower(String userName){
         followers.remove(userName);
     }
