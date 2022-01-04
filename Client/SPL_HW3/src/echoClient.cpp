@@ -39,16 +39,19 @@ int main (int argc, char *argv[]) {
 
     Task readFromSocketTask(connectionHandler);
     std::thread th1(&Task::run,&readFromSocketTask);
-
+    bool userLineIsLogOut= false;
 	//From here we will see the rest of the ehco client implementation:
     while (1) {
 
         const short bufsize = 1024;
         char buf[bufsize];
-
-
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
+        if(line=="LOGOUT")
+            userLineIsLogOut= true;
+        else
+            userLineIsLogOut= false;
+
         std::vector<std::string> words;
         int endofkeywork=line.find(' ');
         std::string keyword=line.substr(0,endofkeywork);
@@ -70,10 +73,10 @@ int main (int argc, char *argv[]) {
         }
 		// connectionHandler.sendLine(line) appends '\n' to the message. Therefor we send len+1 bytes.
         std::cout << "Sent " << len+1 << " bytes to server" << std::endl;
-        if(readFromSocketTask.isTerminated()) {
-            std::cout << "!!!!!!!!!!!" << std::endl;
+
+        if(userLineIsLogOut&&readFromSocketTask.isLogIn())
             break;
-        }
+
         // We can use one of three options to read data from the server:
         // 1. Read a fixed number of characters
         // 2. Read a line (up to the newline character using the getline() buffered reader
@@ -97,7 +100,9 @@ int main (int argc, char *argv[]) {
 //            break;
 //        }
     }
+   // std::cout << "OUT OF WHILE" << std::endl << std::endl;
     th1.join();
+   // std::cout << "OUT OF join" << std::endl << std::endl;
     return 0;
 }
 

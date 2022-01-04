@@ -14,10 +14,12 @@ class Task{
 private:
     ConnectionHandler* _connectionHandler;
     bool _terminated;
+    bool login;
 public:
     Task(ConnectionHandler* connectionHandler);
     void run();
     bool isTerminated();
+    bool isLogIn();
 };
 
 #endif //SPL_HW3_TASK_H

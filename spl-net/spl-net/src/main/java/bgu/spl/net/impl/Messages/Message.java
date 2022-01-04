@@ -24,4 +24,12 @@ public abstract class Message {
     public String toString(){
         return " "+opCode;
     }
+
+    public List<Object> getArgList(){
+        return argList;
+    }
+
+    public int getopCode(){
+        return opCode;
+    }
 }

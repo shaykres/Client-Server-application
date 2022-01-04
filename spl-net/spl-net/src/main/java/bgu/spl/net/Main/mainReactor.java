@@ -10,8 +10,11 @@ import java.io.IOException;
 public class mainReactor {
     public static void main(String[] args) throws IOException {
         NetworkSystemData data = NetworkSystemData.getInstance();
-        Server.reactor(Integer.parseInt(args[1]), Integer.parseInt(args[0]),
+        Server.reactor(3, 7777,
                 () -> new BidiMessagingProtocolImpl(),
                 () -> new MessageEncoderDecoderImpl()).serve();
+//        Server.reactor(Integer.parseInt(args[1]), Integer.parseInt(args[0]),
+//                () -> new BidiMessagingProtocolImpl(),
+//                () -> new MessageEncoderDecoderImpl()).serve();
     }
 }

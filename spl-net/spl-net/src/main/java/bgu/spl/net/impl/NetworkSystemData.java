@@ -75,7 +75,6 @@ public class NetworkSystemData {
             return false;
        ConUsers.get(conID).UserLogOut();
        ConUsers.remove(conID);
-       connections.disconnect(conID);
        return true;
     }
 

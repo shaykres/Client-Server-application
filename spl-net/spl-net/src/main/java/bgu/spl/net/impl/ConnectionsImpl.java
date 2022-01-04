@@ -40,6 +40,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         if(!ConnectedUsers.containsKey(connectionId))
             return false;
         else{
+            System.out.println("message sent to user");
             ConnectedUsers.get(connectionId).send((T)msg);
             return true;
         }
@@ -57,5 +58,6 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
     public void AddConnection(int conId,ConnectionHandler<T> connectionHandler){
         ConnectedUsers.put(conId,connectionHandler);
+        System.out.println("client "+conId+" added to connections");
     }
 }

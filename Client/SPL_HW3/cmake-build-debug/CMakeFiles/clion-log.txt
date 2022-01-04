@@ -1,4 +1,4 @@
-C:\Users\97253\AppData\Local\JetBrains\CLion2021.3\cygwin_cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /cygdrive/c/Users/97253/Downloads/SPL3/SPL3/Client/SPL_HW3
+C:\Users\Shay\AppData\Local\JetBrains\CLion2021.2\cygwin_cmake\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3
 -- The C compiler identification is GNU 11.2.0
 -- The CXX compiler identification is GNU 11.2.0
 -- Detecting C compiler ABI info
@@ -14,4 +14,4 @@ C:\Users\97253\AppData\Local\JetBrains\CLion2021.3\cygwin_cmake\bin\cmake.exe -D
 -- Found Boost: /cygdrive/c/cygwin64/usr/include (found version "1.66.0") found components: system 
 -- Configuring done
 -- Generating done
--- Build files have been written to: /cygdrive/c/Users/97253/Downloads/SPL3/SPL3/Client/SPL_HW3/cmake-build-debug
+-- Build files have been written to: /cygdrive/c/Users/Shay/Downloads/SPL3/Client/SPL_HW3/cmake-build-debug

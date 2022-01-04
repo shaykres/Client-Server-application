@@ -17,7 +17,6 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private final BidiMessagingProtocol<T> protocol;
     private final MessageEncoderDecoder<T> encdec;
     private final Socket sock;
-    private int connectionid;
     private BufferedInputStream in;
     private BufferedOutputStream out;
     private volatile boolean connected = true;
@@ -26,7 +25,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
         this.sock = sock;
         this.encdec = reader;
         this.protocol = protocol;
-        this.protocol.start(connectionid, ConnectionsImpl.getInstance());
+        this.protocol.start(connectionID, ConnectionsImpl.getInstance());
     }
 
     @Override
@@ -60,9 +59,9 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     public void send(T msg) {
         try {
             out.write(encdec.encode(msg));
-            System.out.println("i write to client");
+            //System.out.println("i write to client");
             out.flush();
-            System.out.println("i finish write to client");
+            //System.out.println("i finish write to client");
         }
         catch (IOException ex) {
             ex.printStackTrace();
