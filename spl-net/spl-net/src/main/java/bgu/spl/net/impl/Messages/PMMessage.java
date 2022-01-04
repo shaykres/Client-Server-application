@@ -11,14 +11,14 @@ import java.util.List;
 public class PMMessage extends Message{
     private String userName;
     private String content;
-    private Date dateAndTime;
+    //private String _dateAndTime;
     public PMMessage(List<Object> arglist) {
         super(arglist);
         userName=(String)arglist.get(0);
         content=(String)arglist.get(1);
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm");
-        dateAndTime = new Date(System.currentTimeMillis());
-        //formatter.format(dateAndTime) - to get it by the right format
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd" );
+        Date dateAndTime = new Date(System.currentTimeMillis());
+        content+=formatter.format(dateAndTime);
     }
 
     @Override

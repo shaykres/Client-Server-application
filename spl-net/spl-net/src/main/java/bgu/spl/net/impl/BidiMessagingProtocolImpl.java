@@ -22,8 +22,9 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
 
     @Override
     public void process(Message message) {
+        System.out.println("CLIENT"+connectionId+">");
         Message tosend=message.process(connectionId);
-        System.out.println("message ack got back");
+        //System.out.println("message ack got back");
         connections.send(connectionId,tosend);
         if(tosend instanceof AckMessage){
             //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");

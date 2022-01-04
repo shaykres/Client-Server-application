@@ -37,11 +37,11 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         else {
             if (opCode == -1) {
                 opcode[byteDecode] = nextByte;
-                System.out.println("byteDecode: "+byteDecode+"nextByte"+nextByte);
+               // System.out.println("byteDecode: "+byteDecode+"nextByte"+nextByte);
                 byteDecode++;
                 if (byteDecode == 2) {
                     opCode = bytesToShort(opcode);
-                    System.out.println(opCode);
+                   // System.out.println(opCode);
                 }
             } else {
                 if (nextByte != ';')
@@ -58,7 +58,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
 
     @Override
     public byte[] encode(Message message) {
-        System.out.println("i am in encode"+message.toString());
+       // System.out.println("i am in encode"+message.toString());
         return message.encode();
     }
 

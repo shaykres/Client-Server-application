@@ -123,9 +123,12 @@ public class NetworkSystemData {
         return false;
     }
     public boolean LogStat(int ConId,List<User> users) {
+        String userName=ConUsers.get(ConId).getUserName();
         if(IsUserLogIn(ConId)) {
-            for(int i=0;i<ConUsers.size();i++)
-                users.add(ConUsers.get(i));
+            for(User u :ConUsers.values()) {
+                if(u.IsUserLogIn()&&!u.isUserBlock(userName)&&!ConUsers.get(ConId).isUserBlock(u.getUserName()))
+                    users.add(u);
+            }
             return true;
         }
         return false;
@@ -135,6 +138,11 @@ public class NetworkSystemData {
             for(int i=0;i<usernames.size();i++) {
                if(!SystemUsers.containsKey(usernames.get(i)))
                    return false;
+               if(ConUsers.get(ConId).isUserBlock(usernames.get(i)))
+                   return false;
+               if(SystemUsers.get(usernames.get(i)).isUserBlock(ConUsers.get(ConId).getUserName()))
+                   return false;
+
                users.add(SystemUsers.get(usernames.get(i)));
             }
             return true;
