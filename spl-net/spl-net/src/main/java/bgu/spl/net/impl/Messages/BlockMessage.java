@@ -9,7 +9,7 @@ public class BlockMessage extends Message{
     public BlockMessage(List<Object> argList) {
         super(argList);
         UserNameToBlock=(String)argList.get(0);
-
+        opCode=12;
     }
 
     @Override

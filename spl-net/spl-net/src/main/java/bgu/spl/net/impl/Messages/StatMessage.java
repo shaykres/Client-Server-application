@@ -14,8 +14,14 @@ public class StatMessage extends Message {
 
     public StatMessage(List<Object> arglist) {
         super(arglist);
-        for(int i=0;i<arglist.size();i++)
-            usersName.add((String)argList.get(i));
+        opCode=8;
+        usersName=new LinkedList<>();
+        users=new LinkedList<>();
+        String listUsers=(String)arglist.get(0);
+        String[] parts = listUsers.split("\\|");
+        for(int i=0;i<parts.length;i++) {
+            usersName.add(parts[i]);
+        }
     }
 
     @Override
@@ -52,11 +58,11 @@ public class StatMessage extends Message {
             message[6]=numOfPost[0];
             message[7]=numOfPost[1];
             byte[]numOffollowers=shortToBytes((short)u.getNumOfFollowers());
-            message[8]=numOfPost[0];
-            message[9]=numOfPost[1];
+            message[8]=numOffollowers[0];
+            message[9]=numOffollowers[1];
             byte[]numOffollowing=shortToBytes((short)u.getNumOffollowing());
-            message[10]=numOfPost[0];
-            message[11]=numOfPost[1];
+            message[10]=numOffollowing[0];
+            message[11]=numOffollowing[1];
             message[12]=';';
         }
         return message;

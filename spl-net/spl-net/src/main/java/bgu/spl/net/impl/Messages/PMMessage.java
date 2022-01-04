@@ -16,6 +16,7 @@ public class PMMessage extends Message{
         super(arglist);
         userName=(String)arglist.get(0);
         content=(String)arglist.get(1);
+        opCode=6;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd" );
         Date dateAndTime = new Date(System.currentTimeMillis());
         content+=formatter.format(dateAndTime);
