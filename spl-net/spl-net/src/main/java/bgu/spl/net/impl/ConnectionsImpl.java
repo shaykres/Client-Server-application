@@ -4,6 +4,7 @@ import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.impl.Messages.Message;
 import bgu.spl.net.srv.bidi.ConnectionHandler;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,13 @@ public class ConnectionsImpl<T> implements Connections<T> {
     }
 
     @Override
-    public void disconnect(int connectionId) {
-        ConnectedUsers.remove(connectionId);
+    public void disconnect(int connectionId)  {
+        try {
+            ConnectedUsers.remove(connectionId).close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void AddConnection(int conId,ConnectionHandler<T> connectionHandler){
