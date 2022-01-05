@@ -41,7 +41,7 @@ public class NotificationMessage extends Message {
         for (int i=0;i<content.length;i++){
             message[i+4+postUser.length]=content[i];
         }
-        message[4+postUser.length+content.length]=0;
+        message[4+postUser.length+content.length]=';';
         return message;
     }
 
