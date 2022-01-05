@@ -38,7 +38,8 @@ bool ConnectionHandler::getBytes(char bytes[], unsigned int bytesToRead) {
 	boost::system::error_code error;
     try {
         while (!error && bytesToRead > tmp ) {
-			tmp += socket_.read_some(boost::asio::buffer(bytes+tmp, bytesToRead-tmp), error);			
+			tmp += socket_.read_some(boost::asio::buffer(bytes+tmp, bytesToRead-tmp), error);
+			//std::cout <<"i recive:"<<tmp<< std::endl;			
         }
 		if(error)
 			throw boost::system::system_error(error);
@@ -68,12 +69,12 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
  
 bool ConnectionHandler::getLine(std::string& line) {
-    //std::cout << "get line" << std::endl;
+    std::cout << "get line" << std::endl;
     return getFrameAscii(line, ';');
 }
 
 bool ConnectionHandler::sendLine(std::string& line) {
-    //std::cout << "sent line" << std::endl;
+    std::cout << "sent line" << std::endl;
     return sendFrameAscii(line, ';');
 }
  
@@ -83,13 +84,14 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
     // Stop when we encounter the null character. 
     // Notice that the null character is not appended to the frame string.
     try {
-       // std::cout << "i before opcode" << std::endl;
+        //std::cout << "i before opcode" << std::endl;
         getBytes(&ch, 1);
         byte[0]=ch;
-       // std::cout << "i after opcode" << std::endl;
         getBytes(&ch, 1);
         byte[1]=ch;
+	//std::cout << "i after opcode" << std::endl;
         short opcode=bytesToShort(byte);
+	//std::cout << "my opcode is:"<<opcode << std::endl;
         if(opcode==10||opcode==11){
             getBytes(&ch, 1);
             byte[0]=ch;
@@ -97,24 +99,28 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
             byte[1]=ch;
            // std::cout << opcode << std::endl;
             short subject=bytesToShort(byte);
-            std::cout << subject << std::endl;
+           //std::cout << subject << std::endl;
             if(opcode==10){
-               frame+="ACK "+std::to_string(subject);
-               if(subject==7||subject==8)
-                   frame+=" "+ sevenOr8();
+               if(subject==7||subject==8) {
+                   sevenOr8(frame, subject);
+                   return true;
+               }
+               else
+                   frame+="ACK "+std::to_string(subject);
             }
             if(opcode==11)
                 frame+="ERROR "+std::to_string(subject);
             if(delimiter != ch)
                 frame+=" ";
         }
-        if(opcode==9)
+        if(opcode==9){
             frame+="NOTIFICATION ";
+	}
         if(opcode==12)
             frame+="BLOCK ";
-
 		do{
 			getBytes(&ch, 1);
+			frame.append(1, ch);
         }while (delimiter != ch);
     } catch (std::exception& e) {
         std::cerr << "recv failed (Error: " << e.what() << ')' << std::endl;
@@ -145,9 +151,12 @@ short ConnectionHandler::bytesToShort(char *bytesArr) {
     return result;
 }
 
-std::string ConnectionHandler::sevenOr8() {
+void ConnectionHandler::sevenOr8(std::string& frame,short subject) {
     char* byte= new char[2];
     char ch;
+    //bool enter= true;
+    while (ch!=';'){
+    frame+=ch;
     getBytes(&ch, 1);
     byte[0]=ch;
     getBytes(&ch, 1);
@@ -168,8 +177,10 @@ std::string ConnectionHandler::sevenOr8() {
     getBytes(&ch, 1);
     byte[1]=ch;
     short numfollowing=bytesToShort(byte);
-    string everything=std::to_string(age)+" "+std::to_string(numPost)+" "+std::to_string(numfollowers)+" "+std::to_string(numfollowing);
-    return everything;
+    frame+="ACK "+std::to_string(subject)+" "+std::to_string(age)+" "+std::to_string(numPost)+" "+std::to_string(numfollowers)+" "+std::to_string(numfollowing);
+    getBytes(&ch, 1);
+    }
+    frame+=" ";
 }
 
 
