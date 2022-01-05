@@ -15,11 +15,13 @@ public class PMMessage extends Message{
     public PMMessage(List<Object> arglist) {
         super(arglist);
         userName=(String)arglist.get(0);
-        content=(String)arglist.get(1);
+        content="";
+        for(int i=1;i<arglist.size();i++)
+            content+=" "+(String)arglist.get(i);
         opCode=6;
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd" );
         Date dateAndTime = new Date(System.currentTimeMillis());
-        content+=formatter.format(dateAndTime);
+        content+=" "+formatter.format(dateAndTime);
     }
 
     @Override
