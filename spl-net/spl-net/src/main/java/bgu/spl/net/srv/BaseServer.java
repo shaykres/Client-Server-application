@@ -17,6 +17,7 @@ public abstract class BaseServer<T> implements Server<T> {
     private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
     private int ClientConId;
+    private ConnectionsImpl connections;
 
     public BaseServer(
             int port,
@@ -28,6 +29,7 @@ public abstract class BaseServer<T> implements Server<T> {
         this.encdecFactory = encdecFactory;
 		this.sock = null;
         ClientConId=0;
+        connections=ConnectionsImpl.getInstance();
     }
 
     @Override
@@ -46,8 +48,7 @@ public abstract class BaseServer<T> implements Server<T> {
                         ClientConId,
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
-                ConnectionsImpl.getInstance().AddConnection(ClientConId,handler);
+                        protocolFactory.get(), connections);
                 ClientConId++;
                 execute(handler);
 
