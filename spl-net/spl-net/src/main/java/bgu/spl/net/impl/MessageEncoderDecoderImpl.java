@@ -34,7 +34,6 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
         if(shouldreset) {
             reset();
         }
-        else {
             if (opCode == -1) {
                 opcode[byteDecode] = nextByte;
                // System.out.println("byteDecode: "+byteDecode+"nextByte"+nextByte);
@@ -52,7 +51,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<Message>
                     return myCommand(opCode);
                 }
             }
-        }
+
         return null;
     }
 

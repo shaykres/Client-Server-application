@@ -55,7 +55,7 @@ int main (int argc, char *argv[]) {
         std::string strOptCode = "";
         strOptCode.append(1,bytes[0]);
         strOptCode.append(1,bytes[1]);
-        line=strOptCode+line+';';
+        line=strOptCode+line;
 
         int len=line.length();
         if (!connectionHandler->sendLine(line)) {
