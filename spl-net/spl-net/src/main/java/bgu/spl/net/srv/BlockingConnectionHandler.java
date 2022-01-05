@@ -22,7 +22,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private volatile boolean connected = true;
     private int connectionID;
     private boolean messageend;
-    Object lock;
+    Object lock=new Object();
 
     public BlockingConnectionHandler(int connectionID, Socket sock, MessageEncoderDecoder<T> reader, BidiMessagingProtocol<T> protocol, ConnectionsImpl<T> connections) {
         this.sock = sock;
@@ -66,7 +66,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     @Override
     //if user got number of notifications at the same time from different clients
     public void send(T msg) {
-        synchronized (lock) {
+        //synchronized (lock) {
             try {
 
                 out.write(encdec.encode(msg));
@@ -77,7 +77,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
-        lock.notifyAll();
+       // }
+       // lock.notifyAll();
     }
 }
