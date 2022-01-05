@@ -9,7 +9,10 @@ public class PostMessage extends Message {
     public PostMessage(List<Object> arglist) {
         super(arglist);
         opCode=5;
-        content=(String)arglist.get(0);
+        content="";
+        for (Object b:arglist) {
+            content+=" "+(String)b;
+        }
         userNameSentTo="";
         if(content.contains("@")){
             int StartUserName=content.indexOf("@")+1;
