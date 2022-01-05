@@ -31,15 +31,15 @@ public class PMMessage extends Message{
 
     @Override
     public Message process(int conID) {
-        boolean registerdUser=networkSystemData.IsUserRegistered(userName);
+       // boolean registerdUser=networkSystemData.IsUserRegistered(userName);
         FilterMessage();
         boolean success=networkSystemData.SendPrivateMessage(conID,userName,this);
         List l=new LinkedList();
         l.add(this);
-        if(!registerdUser) {
-            l.add(userName+" isn't applicable for private messages");
-            return new ErrorMessage(l);
-        }
+//        if(!registerdUser) {
+//            l.add(userName+" isn't applicable for private messages");
+//            return new ErrorMessage(l);
+//        }
         if(success)
             return new AckMessage(l);
         return new ErrorMessage(l);

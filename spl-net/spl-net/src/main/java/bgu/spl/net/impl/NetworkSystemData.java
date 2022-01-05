@@ -63,6 +63,8 @@ public class NetworkSystemData {
         if(captcha=='0')
             return false;
         SystemUsers.get(userName).UserLogIn();
+        if(!ConUsers.containsKey(conId))
+            ConUsers.put(conId,SystemUsers.get(userName));
         while (!SystemUsers.get(userName).getWaitingMessages().isEmpty()){
             connections.send(conId,SystemUsers.get(userName).getWaitingMessages().poll());
         }

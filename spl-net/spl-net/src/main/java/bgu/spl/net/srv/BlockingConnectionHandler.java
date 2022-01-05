@@ -21,14 +21,17 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private BufferedOutputStream out;
     private volatile boolean connected = true;
     private int connectionID;
+    private boolean messageend;
+    Object lock;
 
-    public BlockingConnectionHandler(int connectionID,Socket sock, MessageEncoderDecoder<T> reader, BidiMessagingProtocol<T> protocol,ConnectionsImpl<T> connections) {
+    public BlockingConnectionHandler(int connectionID, Socket sock, MessageEncoderDecoder<T> reader, BidiMessagingProtocol<T> protocol, ConnectionsImpl<T> connections) {
         this.sock = sock;
         this.encdec = reader;
         this.protocol = protocol;
-        this.connectionID=connectionID;
-        connections.AddConnection(connectionID,this);
+        this.connectionID = connectionID;
+        connections.AddConnection(connectionID, this);
         this.protocol.start(connectionID, ConnectionsImpl.getInstance());
+        messageend = false;
     }
 
     @Override
@@ -41,8 +44,9 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
                 T nextMessage = encdec.decodeNextByte((byte) read);
                 //add message to systemdata
                 if (nextMessage != null) {
-                   protocol.process(nextMessage);
-                   if(!sock.isClosed())
+                    messageend = true;
+                    protocol.process(nextMessage);
+                    if (!sock.isClosed())
                         in = new BufferedInputStream(sock.getInputStream());
                     //add message to systemdata
                 }
@@ -60,16 +64,20 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     }
 
     @Override
+    //if user got number of notifications at the same time from different clients
     public void send(T msg) {
-        try {
-            out.write(encdec.encode(msg));
-            //System.out.println("i write to client");
-            out.flush();
-            //System.out.println("i finish write to client");
-            System.out.println("message sent to user "+connectionID);
+        synchronized (lock) {
+            try {
+
+                out.write(encdec.encode(msg));
+                //System.out.println("i write to client");
+                out.flush();
+                //System.out.println("i finish write to client");
+                System.out.println("message sent to user " + connectionID);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
-        catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        lock.notifyAll();
     }
 }
