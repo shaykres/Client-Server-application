@@ -50,7 +50,7 @@ public:
 
     short bytesToShort(char* bytesArr);
 
-    std::string sevenOr8();
+    void sevenOr8(std::string& frame,short subject);
 }; //class ConnectionHandler
  
 #endif
