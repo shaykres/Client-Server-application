@@ -23,6 +23,7 @@ public class Reactor<T> implements Server<T> {
     private final ActorThreadPool pool;
     private Selector selector;
     private int ClientConId;
+    private ConnectionsImpl connections;
 
     private Thread selectorThread;
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
@@ -38,6 +39,7 @@ public class Reactor<T> implements Server<T> {
         this.protocolFactory = protocolFactory;
         this.readerFactory = readerFactory;
         ClientConId=0;
+        connections=ConnectionsImpl.getInstance();
     }
 
     @Override
@@ -84,7 +86,7 @@ public class Reactor<T> implements Server<T> {
         pool.shutdown();
     }
 
-    /*package*/ void updateInterestedOps(SocketChannel chan, int ops) {
+    /package/ void updateInterestedOps(SocketChannel chan, int ops) {
         final SelectionKey key = chan.keyFor(selector);
         if (Thread.currentThread() == selectorThread) {
             key.interestOps(ops);
@@ -105,8 +107,7 @@ public class Reactor<T> implements Server<T> {
                 readerFactory.get(),
                 protocolFactory.get(),
                 clientChan,
-                this);
-        ConnectionsImpl.getInstance().AddConnection(ClientConId,handler);
+                this,connections);
         ClientConId++;
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }
