@@ -23,16 +23,19 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final SocketChannel chan;
     private final Reactor reactor;
 
+
     public NonBlockingConnectionHandler(int connectionID,
             MessageEncoderDecoder<T> reader,
             BidiMessagingProtocol<T> protocol,
             SocketChannel chan,
-            Reactor reactor) {
+            Reactor reactor,ConnectionsImpl<T> connections) {
         this.chan = chan;
         this.encdec = reader;
         this.protocol = protocol;
         this.reactor = reactor;
+        connections.AddConnection(connectionID,this);
         this.protocol.start(connectionID, ConnectionsImpl.getInstance());
+
     }
 
     public Runnable continueRead() {
