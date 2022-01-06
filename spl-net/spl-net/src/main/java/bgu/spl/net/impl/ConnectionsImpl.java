@@ -49,7 +49,9 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
     @Override
     public void broadcast(Object msg) {
-
+        for(ConnectionHandler<T> handler:ConnectedUsers.values()){
+            handler.send((T)msg);
+        }
     }
 
     @Override

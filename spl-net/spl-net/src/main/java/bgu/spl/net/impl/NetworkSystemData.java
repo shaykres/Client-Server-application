@@ -27,6 +27,7 @@ public class NetworkSystemData {
         Messages = new LinkedList<>();
         connections = ConnectionsImpl.getInstance();
         filterWords = new LinkedList<>();
+        filterWords.add("hello");
     }
 
 
@@ -71,11 +72,14 @@ public class NetworkSystemData {
     public boolean LogOutClient(int conID) {
         if (!ConUsers.containsKey(conID))
             return false;
-        if (!ConUsers.get(conID).IsUserLogIn())
-            return false;
-        ConUsers.get(conID).UserLogOut();
-        ConUsers.remove(conID);
-        return true;
+      //avoid logout problems
+        synchronized (ConUsers.get(conID)) {
+            if (!ConUsers.get(conID).IsUserLogIn())
+                return false;
+            ConUsers.get(conID).UserLogOut();
+            ConUsers.remove(conID);
+            return true;
+        }
     }
 
     public boolean FollowClient(int conId, boolean tofollow, String userName) {
@@ -103,67 +107,75 @@ public class NetworkSystemData {
     public boolean PostMessage(int conId, Message post, List<String> userNameToSent) {
         if (!IsUserLogIn(conId))
             return false;
+        //user handling number of posts at the same time
+        synchronized (ConUsers.get(conId)) {
+            for (int i = 0; i < userNameToSent.size(); i++) {
+                if (!SystemUsers.containsKey(userNameToSent.get(i)))
+                    return false;
+                if (SystemUsers.get(userNameToSent.get(i)).isUserBlock(ConUsers.get(conId).getUserName()))
+                    return false;
+                if (ConUsers.get(conId).isUserBlock((userNameToSent.get(i))))
+                    return false;
+            }
+            List<Object> l = new LinkedList<>();
+            l.add(ConUsers.get(conId).getUserName());
+            l.add(post);
+            NotificationMessage notificationMessage = new NotificationMessage(l);
 
-        for (int i = 0; i < userNameToSent.size(); i++) {
-            if (!SystemUsers.containsKey(userNameToSent.get(i)))
-                return false;
-            if (SystemUsers.get(userNameToSent.get(i)).isUserBlock(ConUsers.get(conId).getUserName()))
-                return false;
-            if (ConUsers.get(conId).isUserBlock((userNameToSent.get(i))))
-                return false;
-        }
-        List<Object> l = new LinkedList<>();
-        l.add(ConUsers.get(conId).getUserName());
-        l.add(post);
-        NotificationMessage notificationMessage = new NotificationMessage(l);
-
-        for (int i = 0; i < userNameToSent.size(); i++) {
-            int conIdToSent = ClientConId(userNameToSent.get(i));
-            if (conIdToSent == -1||!SystemUsers.get(userNameToSent.get(i)).IsUserLogIn())
-                SystemUsers.get(userNameToSent.get(i)).AddWaitMessage(notificationMessage);
-            else
-                connections.send(conIdToSent, notificationMessage);
-        }
-
-        for (String follower : ConUsers.get(conId).getFollowers()) {
-            if(!userNameToSent.contains(follower)) {
-                int conIdToSent = ClientConId(follower);
-                if (conIdToSent == -1||!SystemUsers.get(follower).IsUserLogIn())
-                    SystemUsers.get(follower).AddWaitMessage(notificationMessage);
+            for (int i = 0; i < userNameToSent.size(); i++) {
+                int conIdToSent = ClientConId(userNameToSent.get(i));
+                if (conIdToSent == -1 || !SystemUsers.get(userNameToSent.get(i)).IsUserLogIn())
+                    SystemUsers.get(userNameToSent.get(i)).AddWaitMessage(notificationMessage);
                 else
                     connections.send(conIdToSent, notificationMessage);
             }
+
+            for (String follower : ConUsers.get(conId).getFollowers()) {
+                if (!userNameToSent.contains(follower)) {
+                    int conIdToSent = ClientConId(follower);
+                    if (conIdToSent == -1 || !SystemUsers.get(follower).IsUserLogIn())
+                        SystemUsers.get(follower).AddWaitMessage(notificationMessage);
+                    else
+                        connections.send(conIdToSent, notificationMessage);
+                }
+            }
+            ConUsers.get(conId).setNumPost();
+            Messages.add(post);
+            return true;
         }
-        ConUsers.get(conId).setNumPost();
-        Messages.add(post);
-        return true;
     }
 
     public boolean LogStat(int ConId, List<User> users) {
+        //avoid problems of changes by follow or block during logstat
         if (IsUserLogIn(ConId)) {
-            String userName = ConUsers.get(ConId).getUserName();
-            for (User u : ConUsers.values()) {
-                if (u.IsUserLogIn() && !u.isUserBlock(userName) && !ConUsers.get(ConId).isUserBlock(u.getUserName()))
-                    users.add(u);
+            synchronized (ConUsers.get(ConId)) {
+                String userName = ConUsers.get(ConId).getUserName();
+                for (User u : ConUsers.values()) {
+                    if (u.IsUserLogIn() && !u.isUserBlock(userName) && !ConUsers.get(ConId).isUserBlock(u.getUserName()))
+                        users.add(u);
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
 
     public boolean Stat(int ConId, List<String> usernames, List<User> users) {
+        //avoid problems of changes by follow or block during stat
         if (IsUserLogIn(ConId)) {
-            for (int i = 0; i < usernames.size(); i++) {
-                //System.out.println(usernames.get(i));
-                if (!SystemUsers.containsKey(usernames.get(i)))
-                    return false;
-                if (ConUsers.get(ConId).isUserBlock(usernames.get(i)))
-                    return false;
-                if (SystemUsers.get(usernames.get(i)).isUserBlock(ConUsers.get(ConId).getUserName()))
-                    return false;
-                users.add(SystemUsers.get(usernames.get(i)));
+            synchronized (ConUsers.get(ConId)) {
+                for (int i = 0; i < usernames.size(); i++) {
+                    //System.out.println(usernames.get(i));
+                    if (!SystemUsers.containsKey(usernames.get(i)))
+                        return false;
+                    if (ConUsers.get(ConId).isUserBlock(usernames.get(i)))
+                        return false;
+                    if (SystemUsers.get(usernames.get(i)).isUserBlock(ConUsers.get(ConId).getUserName()))
+                        return false;
+                    users.add(SystemUsers.get(usernames.get(i)));
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -174,16 +186,20 @@ public class NetworkSystemData {
         l.add(post);
         NotificationMessage notificationMessage = new NotificationMessage(l);
         if (IsUserLogIn(ConId)) {
-            for (String follower : ConUsers.get(ConId).getFollowers()) {
-                int conIdToSent = ClientConId(follower);
-                if (conIdToSent == -1||!SystemUsers.get(follower).IsUserLogIn())
-                    SystemUsers.get(follower).AddWaitMessage(notificationMessage);
-                else
-                    connections.send(conIdToSent, notificationMessage);
+            //user handling number of posts at the same time
+            synchronized (ConUsers.get(ConId)) {
+                for (String follower : ConUsers.get(ConId).getFollowers()) {
+                    int conIdToSent = ClientConId(follower);
+                    if (conIdToSent == -1 || !SystemUsers.get(follower).IsUserLogIn())
+                        SystemUsers.get(follower).AddWaitMessage(notificationMessage);
+                    else
+                        connections.send(conIdToSent, notificationMessage);
+                }
+                Messages.add(post);
+                ConUsers.get(ConId).setNumPost();
+                return true;
             }
-            Messages.add(post);
-            ConUsers.get(ConId).setNumPost();
-            return true;
+
         }
         return false;
     }
@@ -219,17 +235,20 @@ public class NetworkSystemData {
             return false;
         if (SystemUsers.get(userName).isUserBlock(ConUsers.get(conId).getUserName()))
             return false;
-        List<Object> l = new LinkedList<>();
-        l.add(ConUsers.get(conId).getUserName());
-        l.add(pm);
-        NotificationMessage notificationMessage = new NotificationMessage(l);
-        int conIdToSent = ClientConId(userName);
-        if (conIdToSent == -1||!SystemUsers.get(userName).IsUserLogIn())
-            SystemUsers.get(userName).AddWaitMessage(notificationMessage);
-        else
-            connections.send(conIdToSent, notificationMessage);
-        Messages.add(pm);
-        return true;
+//user handling number of pm at the same time
+        synchronized (ConUsers.get(conId)) {
+            List<Object> l = new LinkedList<>();
+            l.add(ConUsers.get(conId).getUserName());
+            l.add(pm);
+            NotificationMessage notificationMessage = new NotificationMessage(l);
+            int conIdToSent = ClientConId(userName);
+            if (conIdToSent == -1 || !SystemUsers.get(userName).IsUserLogIn())
+                SystemUsers.get(userName).AddWaitMessage(notificationMessage);
+            else
+                connections.send(conIdToSent, notificationMessage);
+            Messages.add(pm);
+            return true;
+        }
     }
 
     public boolean IsUserRegistered(String userName) {
