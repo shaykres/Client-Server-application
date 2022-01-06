@@ -4,9 +4,7 @@
 #include "../include/Task.h"
 
 using std::string;
-Task::  Task(ConnectionHandler* connectionHandler) :_connectionHandler(connectionHandler){
-    _terminated= false;
-    login= false;
+Task::  Task(ConnectionHandler* connectionHandler) :_connectionHandler(connectionHandler),_terminated(false),login(false){
 }
 
 void Task::run() {

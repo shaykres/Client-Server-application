@@ -87,8 +87,10 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
         //std::cout << "i before opcode" << std::endl;
         getBytes(&ch, 1);
         byte[0]=ch;
+       // std::cout << ch << std::endl;
         getBytes(&ch, 1);
         byte[1]=ch;
+        //std::cout << ch << std::endl;
 	//std::cout << "i after opcode" << std::endl;
         short opcode=bytesToShort(byte);
 	//std::cout << "my opcode is:"<<opcode << std::endl;
@@ -99,7 +101,7 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
             byte[1]=ch;
            // std::cout << opcode << std::endl;
             short subject=bytesToShort(byte);
-           //std::cout << subject << std::endl;
+          // std::cout << subject << std::endl;
             if(opcode==10){
                if(subject==7||subject==8) {
                    sevenOr8(frame, subject);
