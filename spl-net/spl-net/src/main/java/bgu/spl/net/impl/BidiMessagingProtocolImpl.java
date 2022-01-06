@@ -32,8 +32,9 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
             int opcode=((Integer)((Message)tosend.getArgList().get(0)).getopCode());
            // System.out.println("!!!!!!!!!!!!"+opcode);
             if(opcode==3) {
-                System.out.println("disconnect client "+connectionId);
-                connections.disconnect(connectionId);
+                //System.out.println("disconnect client "+connectionId);
+               // connections.disconnect(connectionId);
+                shouldTerminate=true;
             }
         }
     }

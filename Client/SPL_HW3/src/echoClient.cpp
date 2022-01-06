@@ -57,7 +57,7 @@ int main (int argc, char *argv[]) {
         strOptCode.append(1,bytes[1]);
         line=strOptCode+line;
 
-        int len=line.length();
+        //int len=line.length();
         if (!connectionHandler->sendLine(line)) {
             std::cout << "Disconnected. Exiting...\n" << std::endl;
             break;

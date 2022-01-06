@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.nio.file.ClosedWatchServiceException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -22,6 +23,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     private final SocketChannel chan;
     private final Reactor reactor;
+    private ConnectionsImpl connections;
+    private int connectionID;
 
 
     public NonBlockingConnectionHandler(int connectionID,
@@ -33,8 +36,10 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         this.encdec = reader;
         this.protocol = protocol;
         this.reactor = reactor;
-        connections.AddConnection(connectionID,this);
-        this.protocol.start(connectionID, ConnectionsImpl.getInstance());
+        this.connectionID=connectionID;
+        this.connections=connections;
+        this.connections.AddConnection(connectionID,this);
+        this.protocol.start(connectionID, connections);
 
     }
 
@@ -52,16 +57,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
             buf.flip();
             return () -> {
                 try {
-//                    while (buf.hasRemaining()) {
-//                        T nextMessage = encdec.decodeNextByte(buf.get());
-//                        if (nextMessage != null) {
-//                            T response = protocol.process(nextMessage);
-//                            if (response != null) {
-//                                writeQueue.add(ByteBuffer.wrap(encdec.encode(response)));
-//                                reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-//                            }
-//                        }
-//                    }
                     while (buf.hasRemaining()) {
                         T nextMessage = encdec.decodeNextByte(buf.get());
                         if (nextMessage != null) {
@@ -96,6 +91,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         while (!writeQueue.isEmpty()) {
             try {
                 ByteBuffer top = writeQueue.peek();
+                //System.out.println(top.capacity());
                 chan.write(top);
                 if (top.hasRemaining()) {
                     return;
@@ -109,7 +105,10 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         }
 
         if (writeQueue.isEmpty()) {
-            if (protocol.shouldTerminate()) close();
+            if (protocol.shouldTerminate()) {
+                connections.disconnect(connectionID);
+                //close();
+            }
             else reactor.updateInterestedOps(chan, SelectionKey.OP_READ);
         }
     }
@@ -130,7 +129,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
 
     @Override
     public void send(T msg) {
-       // System.out.println("in send of nonblocking conh");
         writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));
         reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }

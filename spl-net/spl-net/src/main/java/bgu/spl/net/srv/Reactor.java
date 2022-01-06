@@ -12,6 +12,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.file.ClosedWatchServiceException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
 
@@ -23,7 +24,7 @@ public class Reactor<T> implements Server<T> {
     private final ActorThreadPool pool;
     private Selector selector;
     private int ClientConId;
-    private ConnectionsImpl connections;
+    private ConnectionsImpl<T> connections;
 
     private Thread selectorThread;
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
@@ -46,7 +47,7 @@ public class Reactor<T> implements Server<T> {
     public void serve() {
 	selectorThread = Thread.currentThread();
         try (Selector selector = Selector.open();
-                ServerSocketChannel serverSock = ServerSocketChannel.open()) {
+               ServerSocketChannel serverSock = ServerSocketChannel.open()) {
 
             this.selector = selector; //just to be able to close
 
@@ -115,7 +116,6 @@ public class Reactor<T> implements Server<T> {
     private void handleReadWrite(SelectionKey key) {
         @SuppressWarnings("unchecked")
         NonBlockingConnectionHandler<T> handler = (NonBlockingConnectionHandler<T>) key.attachment();
-
         if (key.isReadable()) {
             Runnable task = handler.continueRead();
             if (task != null) {
@@ -124,6 +124,7 @@ public class Reactor<T> implements Server<T> {
         }
 
 	    if (key.isValid() && key.isWritable()) {
+            //System.out.println("continoooo");
             handler.continueWrite();
         }
     }

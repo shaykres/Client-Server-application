@@ -154,7 +154,7 @@ public class NetworkSystemData {
     public boolean Stat(int ConId, List<String> usernames, List<User> users) {
         if (IsUserLogIn(ConId)) {
             for (int i = 0; i < usernames.size(); i++) {
-                System.out.println(usernames.get(i));
+                //System.out.println(usernames.get(i));
                 if (!SystemUsers.containsKey(usernames.get(i)))
                     return false;
                 if (ConUsers.get(ConId).isUserBlock(usernames.get(i)))
