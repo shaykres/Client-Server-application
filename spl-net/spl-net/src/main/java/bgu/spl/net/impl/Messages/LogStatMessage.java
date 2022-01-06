@@ -23,7 +23,7 @@ public class LogStatMessage extends Message {
     @Override
     public byte[] encode() {
         byte[] message=new byte[4+9*users.size()];
-        System.out.println("USER LIST SIZE:"+users.size());
+        //System.out.println("USER LIST SIZE:"+users.size());
         if(users.size()==0){
             byte[]noting=new byte[4];
             byte[]opcodeack=shortToBytes((short)10);

@@ -119,15 +119,20 @@ public class NetworkSystemData {
 
         for (int i = 0; i < userNameToSent.size(); i++) {
             int conIdToSent = ClientConId(userNameToSent.get(i));
-            connections.send(conIdToSent, notificationMessage);
+            if (conIdToSent == -1||!SystemUsers.get(userNameToSent.get(i)).IsUserLogIn())
+                SystemUsers.get(userNameToSent.get(i)).AddWaitMessage(notificationMessage);
+            else
+                connections.send(conIdToSent, notificationMessage);
         }
 
         for (String follower : ConUsers.get(conId).getFollowers()) {
-            int conIdToSent = ClientConId(follower);
-            if (conIdToSent == -1)
-                SystemUsers.get(follower).AddWaitMessage(notificationMessage);
-            else
-                connections.send(conIdToSent, notificationMessage);
+            if(!userNameToSent.contains(follower)) {
+                int conIdToSent = ClientConId(follower);
+                if (conIdToSent == -1||!SystemUsers.get(follower).IsUserLogIn())
+                    SystemUsers.get(follower).AddWaitMessage(notificationMessage);
+                else
+                    connections.send(conIdToSent, notificationMessage);
+            }
         }
         ConUsers.get(conId).setNumPost();
         Messages.add(post);
@@ -171,7 +176,7 @@ public class NetworkSystemData {
         if (IsUserLogIn(ConId)) {
             for (String follower : ConUsers.get(ConId).getFollowers()) {
                 int conIdToSent = ClientConId(follower);
-                if (conIdToSent == -1)
+                if (conIdToSent == -1||!SystemUsers.get(follower).IsUserLogIn())
                     SystemUsers.get(follower).AddWaitMessage(notificationMessage);
                 else
                     connections.send(conIdToSent, notificationMessage);
@@ -219,7 +224,7 @@ public class NetworkSystemData {
         l.add(pm);
         NotificationMessage notificationMessage = new NotificationMessage(l);
         int conIdToSent = ClientConId(userName);
-        if (conIdToSent == -1)
+        if (conIdToSent == -1||!SystemUsers.get(userName).IsUserLogIn())
             SystemUsers.get(userName).AddWaitMessage(notificationMessage);
         else
             connections.send(conIdToSent, notificationMessage);

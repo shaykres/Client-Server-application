@@ -28,7 +28,7 @@ public class PostMessage extends Message {
                 endoftemp = true;
             }
             userName = temp.substring(0, endUserName);
-            System.out.println(userName);
+            //System.out.println(userName);
             userNameSentTo.add(userName);
             if (!endoftemp)
                 temp = temp.substring(endUserName + 1);
