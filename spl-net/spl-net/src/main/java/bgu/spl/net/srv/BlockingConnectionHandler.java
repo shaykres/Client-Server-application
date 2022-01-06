@@ -21,6 +21,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private BufferedOutputStream out;
     private volatile boolean connected = true;
     private int connectionID;
+    private ConnectionsImpl<T> connections;
     Object lock=new Object();
 
     public BlockingConnectionHandler(int connectionID, Socket sock, MessageEncoderDecoder<T> reader, BidiMessagingProtocol<T> protocol, ConnectionsImpl<T> connections) {
@@ -28,7 +29,8 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
         this.encdec = reader;
         this.protocol = protocol;
         this.connectionID = connectionID;
-        connections.AddConnection(connectionID, this);
+        this.connections=connections;
+        this.connections.AddConnection(connectionID, this);
         this.protocol.start(connectionID, connections);
     }
 
@@ -46,6 +48,9 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
                         in = new BufferedInputStream(sock.getInputStream());
                 }
             }
+            if(protocol.shouldTerminate()){
+                connections.disconnect(connectionID);
+                
         } catch (IOException ex) {
             ex.printStackTrace();
         }
