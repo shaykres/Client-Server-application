@@ -48,7 +48,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
                         in = new BufferedInputStream(sock.getInputStream());
                 }
             }
-            if(protocol.shouldTerminate()){
+            if(protocol.shouldTerminate())
                 connections.disconnect(connectionID);
                 
         } catch (IOException ex) {
